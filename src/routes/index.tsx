@@ -71,6 +71,38 @@ const aiTools = [
   toolByHref("/ai-notes"),
 ];
 
+const STATS = [
+  { value: "100%", label: "Client-Side Privacy", sub: "Files never hit servers" },
+  { value: "0 sec", label: "Queue Wait Time", sub: "Instant local execution" },
+  { value: "12+", label: "Essential PDF Tools", sub: "Including Next-Gen AI" },
+  { value: "Free", label: "No Subscriptions", sub: "No watermarks or limits" },
+];
+
+function StatsBanner() {
+  return (
+    <section className={`${sectionWrap} mt-12 mb-4`}>
+      <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+        {STATS.map((stat, idx) => (
+          <div
+            key={stat.label}
+            className="group relative overflow-hidden rounded-2xl bg-white/70 p-6 text-center ring-1 ring-ink-200/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-500/10 hover:ring-brand-300 dark:bg-ink-900/70 dark:ring-ink-800 dark:hover:ring-brand-500/40"
+          >
+            <div className="text-3xl font-black tracking-tight text-brand-600 sm:text-4xl dark:text-brand-400 group-hover:scale-105 transition-transform duration-300">
+              {stat.value}
+            </div>
+            <div className="mt-2 text-sm font-bold text-ink-900 dark:text-white">
+              {stat.label}
+            </div>
+            <div className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
+              {stat.sub}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Home() {
   return (
     <>
@@ -86,7 +118,9 @@ function Home() {
 
       <Hero />
 
-      <section aria-labelledby="tools-heading" className={`${sectionWrap} mt-4 animate-fade-in-up`}>
+      <StatsBanner />
+
+      <section aria-labelledby="tools-heading" className={`${sectionWrap} mt-12 animate-fade-in-up`}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 id="tools-heading" className={heading.h2}>
@@ -129,18 +163,30 @@ function Home() {
       </section>
 
       {/* AI Tools */}
-      <section className={`${sectionWrap} mt-20 animate-blur-in`}>
-        <div className="flex items-center gap-4">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-purple-600 text-white animate-glow-pulse">
-            <SparkIcon className="h-6 w-6 animate-float" />
-          </span>
-          <div>
-            <h2 className={heading.h2}>AI-Powered Tools</h2>
-            <p className={`mt-1.5 ${muted}`}>
-              intelligent analysis powered by artificial intelligence
-            </p>
+      <section className={`${sectionWrap} mt-24 animate-blur-in`}>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 via-indigo-600 to-purple-600 text-white shadow-lg shadow-brand-500/25 animate-glow-pulse">
+              <SparkIcon className="h-6 w-6 animate-float" />
+            </span>
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-purple-100 px-3 py-0.5 text-xs font-semibold text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 mb-1">
+                Next-Gen AI
+              </div>
+              <h2 className={heading.h2}>AI-Powered PDF Workspace</h2>
+              <p className={`mt-1 text-sm sm:text-base ${muted}`}>
+                Deep document understanding, instant summaries, quizzes & study notes in seconds
+              </p>
+            </div>
           </div>
+          <Link
+            to="/ai-summarizer"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 hover:text-brand-600 dark:text-brand-300"
+          >
+            Explore AI Suite <ArrowRightIcon className="h-4 w-4" />
+          </Link>
         </div>
+
         <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 stagger-flip">
           {aiTools.map((tool) => (
             <li key={tool.href}>
@@ -591,32 +637,68 @@ function AiDemo() {
 }
 
 const STEPS = [
-  { number: "1", title: "Upload", body: "Select your PDF." },
-  { number: "2", title: "Process", body: "Choose your desired operation." },
-  { number: "3", title: "Download", body: "Download your processed file." },
+  {
+    number: "01",
+    title: "Select & Upload",
+    body: "Drop your PDF file or pick from device. Instant loading with zero wait time.",
+    icon: "📂",
+    badge: "100% Local",
+  },
+  {
+    number: "02",
+    title: "One-Click Magic",
+    body: "Choose compress, merge, convert, or chat with AI. Fast browser-side processing.",
+    icon: "⚡",
+    badge: "Hardware-Accelerated",
+  },
+  {
+    number: "03",
+    title: "Download Instantly",
+    body: "Grab clean, un-watermarked results directly to your disk with zero data trails.",
+    icon: "🎯",
+    badge: "No Watermark",
+  },
 ];
 
 function HowItWorks() {
   return (
-    <section aria-labelledby="how-heading" className={`${sectionWrap} mt-20 animate-slide-in-right`}>
-      <h2 id="how-heading" className={heading.h2}>
-        How it works
-      </h2>
-      <p className={`mt-2 ${muted}`}>Three steps, and none of them is signing up.</p>
+    <section aria-labelledby="how-heading" className={`${sectionWrap} mt-24 animate-slide-in-right`}>
+      <div className="text-center max-w-2xl mx-auto">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold text-brand-700 ring-1 ring-brand-200 dark:bg-brand-900/30 dark:text-brand-300 dark:ring-brand-700/40 mb-3">
+          Streamlined Process
+        </span>
+        <h2 id="how-heading" className={heading.h2}>
+          How It Works in 3 Quick Steps
+        </h2>
+        <p className={`mt-2.5 text-base ${muted}`}>
+          Zero sign-ups, no waiting in cloud queues, and zero file uploads to foreign servers.
+        </p>
+      </div>
 
-      <ol className="mt-10 grid gap-5 sm:grid-cols-3 stagger-slide">
-        {STEPS.map((step) => (
+      <ol className="mt-12 grid gap-6 sm:grid-cols-3 stagger-slide relative">
+        {STEPS.map((step, idx) => (
           <li
             key={step.number}
-            className="rounded-2xl bg-white p-7 ring-1 ring-ink-200/80 dark:bg-ink-900 dark:ring-ink-800 hover-lift"
+            className="group relative rounded-3xl bg-white p-8 ring-1 ring-ink-200/80 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10 hover:ring-brand-300 dark:bg-ink-900 dark:ring-ink-800 dark:hover:ring-brand-500/50"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white animate-rotate-in">
-              {step.number}
-            </span>
-            <h3 className="mt-5 text-lg font-semibold text-ink-900 dark:text-white">
-              {step.title}
-            </h3>
-            <p className={`mt-1 text-sm ${muted}`}>{step.body}</p>
+            <div className="flex items-center justify-between">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-2xl group-hover:scale-110 transition-transform duration-300 dark:bg-brand-900/30">
+                {step.icon}
+              </span>
+              <span className="text-3xl font-black text-ink-200 group-hover:text-brand-400/60 transition-colors dark:text-ink-800">
+                {step.number}
+              </span>
+            </div>
+
+            <div className="mt-6">
+              <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                {step.badge}
+              </span>
+              <h3 className="mt-1 text-lg font-bold text-ink-900 dark:text-white">
+                {step.title}
+              </h3>
+              <p className={`mt-2 text-sm leading-relaxed ${muted}`}>{step.body}</p>
+            </div>
           </li>
         ))}
       </ol>
@@ -635,44 +717,52 @@ function AdSlotRow() {
 const REASONS = [
   {
     icon: BoltIcon,
-    title: "Fast",
-    body: "Process common PDF tasks without installing software.",
-  },
-  {
-    icon: SparkIcon,
-    title: "Simple",
-    body: "No complicated interface or unnecessary steps.",
+    title: "Blazing Browser Speed",
+    body: "Direct WebAssembly and client-side processing without uploading megabytes over the wire.",
+    highlight: "Zero Latency",
   },
   {
     icon: LockIcon,
-    title: "Private",
-    body: "Files are handled on your own device, never stored on a server.",
+    title: "100% Client Privacy",
+    body: "Your sensitive contracts, tax docs, and personal files never touch any external server.",
+    highlight: "Bank-Grade Privacy",
+  },
+  {
+    icon: SparkIcon,
+    title: "Free Forever & Unlimited",
+    body: "No hidden subscriptions, watermark traps, or page limits on everyday document workflows.",
+    highlight: "No Hidden Paywall",
   },
 ];
 
 function WhyUs() {
   return (
-    <section aria-labelledby="why-heading" className={`${sectionWrap} mt-4 animate-fade-in-up`}>
-      <h2 id="why-heading" className={heading.h2}>
-        Built for simple PDF tasks
-      </h2>
-      <p className={`mt-2 ${muted}`}>
-        No dashboards, no projects to manage, nothing to learn.
-      </p>
+    <section aria-labelledby="why-heading" className={`${sectionWrap} mt-20 animate-fade-in-up`}>
+      <div className="text-center max-w-xl mx-auto">
+        <h2 id="why-heading" className={heading.h2}>
+          Engineered for Frictionless Workflows
+        </h2>
+        <p className={`mt-2.5 ${muted}`}>
+          Why thousands choose PDF Quick Tools over heavy software suites.
+        </p>
+      </div>
 
-      <ul className="mt-10 grid gap-5 sm:grid-cols-3 stagger-bounce">
+      <ul className="mt-12 grid gap-6 sm:grid-cols-3 stagger-bounce">
         {REASONS.map((reason) => (
           <li
             key={reason.title}
-            className="rounded-2xl bg-white p-7 ring-1 ring-ink-200/80 dark:bg-ink-900 dark:ring-ink-800 hover-lift"
+            className="group relative rounded-3xl bg-white p-8 ring-1 ring-ink-200/80 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10 hover:ring-brand-300 dark:bg-ink-900 dark:ring-ink-800 dark:hover:ring-brand-500/50"
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-600/15 dark:text-brand-300 hover:animate-wiggle">
-              <reason.icon className="h-5.5 w-5.5" />
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-600 group-hover:text-white dark:from-brand-900/40 dark:to-brand-800/30 dark:text-brand-300 dark:group-hover:bg-brand-600 dark:group-hover:text-white">
+              <reason.icon className="h-6 w-6" />
             </span>
-            <h3 className="mt-4 text-lg font-semibold text-ink-900 dark:text-white">
+            <span className="mt-6 inline-block text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+              {reason.highlight}
+            </span>
+            <h3 className="mt-1 text-lg font-bold text-ink-900 dark:text-white">
               {reason.title}
             </h3>
-            <p className={`mt-1 text-sm ${muted}`}>{reason.body}</p>
+            <p className={`mt-2 text-sm leading-relaxed ${muted}`}>{reason.body}</p>
           </li>
         ))}
       </ul>
