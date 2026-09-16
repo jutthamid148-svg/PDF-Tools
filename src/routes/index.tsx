@@ -166,18 +166,10 @@ function FloatingAiSidebar() {
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           aria-label="Toggle AI Tools Drawer"
-          className="group relative flex items-center gap-2.5 rounded-full bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 p-3.5 sm:px-5 sm:py-3 text-white shadow-2xl shadow-purple-600/40 ring-2 ring-white/20 transition-all duration-300 hover:scale-105 hover:shadow-purple-500/60 active:scale-95"
+          className="group relative flex items-center justify-center rounded-full bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 px-5 py-2.5 sm:px-6 sm:py-3 text-white shadow-xl shadow-brand-600/30 ring-1 ring-white/25 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 hover:from-brand-500 hover:to-purple-500 active:scale-95"
         >
-          <span className="relative flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-white" />
-          </span>
-          <SparkIcon className="h-5 w-5 animate-wiggle" />
-          <span className="hidden sm:inline-block text-sm font-bold tracking-wide">
+          <span className="text-sm sm:text-[15px] font-bold tracking-wide">
             AI Tools
-          </span>
-          <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-extrabold uppercase">
-            New
           </span>
         </button>
       </div>
@@ -198,31 +190,26 @@ function FloatingAiSidebar() {
 
       {/* AI Quick Drawer panel */}
       <aside
-        className={`fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-white dark:bg-[#0d0d1a] ring-1 ring-ink-200 dark:ring-ink-800 shadow-2xl transition-transform duration-300 ease-out p-6 overflow-y-auto flex flex-col ${
+        className={`fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-white/95 dark:bg-[#0d0d1a]/95 backdrop-blur-xl ring-1 ring-ink-200 dark:ring-ink-800 shadow-2xl transition-transform duration-300 ease-out p-6 overflow-y-auto flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         aria-label="AI Tools Quick Panel"
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between pb-5 border-b border-ink-100 dark:border-ink-800">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 to-purple-600 text-white shadow-md shadow-brand-500/20">
-              <SparkIcon className="h-5 w-5 animate-float" />
-            </span>
-            <div>
-              <h3 className="font-bold text-base text-ink-900 dark:text-white">
-                AI PDF Assistant
-              </h3>
-              <p className="text-xs text-ink-500 dark:text-ink-400">
-                Instant document intelligence
-              </p>
-            </div>
+          <div>
+            <h3 className="font-extrabold text-lg text-ink-900 dark:text-white tracking-tight">
+              AI Tools
+            </h3>
+            <p className="text-xs text-ink-500 dark:text-ink-400 mt-0.5">
+              Next-gen document intelligence
+            </p>
           </div>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
             aria-label="Close panel"
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-300 hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-300 hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors text-sm font-semibold"
           >
             ✕
           </button>
