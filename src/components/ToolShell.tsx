@@ -1,0 +1,162 @@
+import { Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { toolEvents } from "#/lib/analytics";
+import { faqJsonLd, softwareJsonLd, type FaqItem } from "#/lib/seo";
+import { relatedTools, type Tool } from "#/lib/tools";
+import { AdSlot } from "./AdSlot";
+import { Faq } from "./Faq";
+import { ArrowRightIcon, LockIcon, ToolIcon } from "./Icons";
+import { heading, muted } from "./ui";
+
+interface ToolShellProps {
+  tool: Tool;
+  /** The working area: uploader, options, progress, result. */
+  children: React.ReactNode;
+  /** Short explanatory paragraphs shown under the tool. */
+  about: React.ReactNode;
+  faq: FaqItem[];
+}
+
+export function ToolShell({ tool, children, about, faq }: ToolShellProps) {
+  useEffect(() => {
+    toolEvents.opened(tool.name);
+  }, [tool.name]);
+
+  const related = relatedTools(tool.href);
+
+  return (
+    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+      <script
+        type="application/ld+json"
+        // Static, built from our own data. No user input reaches it.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            softwareJsonLd({
+              name: tool.name,
+              description: tool.blurb,
+              path: tool.href,
+            }),
+            faqJsonLd(faq),
+          ]),
+        }}
+      />
+
+      <nav aria-label="Breadcrumb" className="mb-6">
+        <ol className="flex flex-wrap items-center gap-1.5 text-sm text-ink-500 dark:text-ink-500">
+          <li>
+            <Link to="/" className="hover:text-brand-700 dark:hover:text-brand-300">
+              Home
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <Link to="/tools" className="hover:text-brand-700 dark:hover:text-brand-300">
+              All Tools
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li className="font-medium text-ink-700 dark:text-ink-300" aria-current="page">
+            {tool.name}
+          </li>
+        </ol>
+      </nav>
+
+      <header className="flex flex-col items-start gap-4 animate-slide-in-left sm:flex-row sm:items-center">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-600 text-white animate-rotate-in">
+          <ToolIcon name={tool.icon} className="h-6 w-6" />
+        </span>
+        <div>
+          <h1 className={heading.h1}>{tool.name}</h1>
+          <p className={`mt-1.5 text-lg ${muted}`}>{tool.subtitle}</p>
+        </div>
+      </header>
+
+      <div className="mt-8 animate-blur-in" style={{ animationDelay: "0.1s" }}>{children}</div>
+
+      <p className="mt-5 flex items-center justify-center gap-2 text-center text-sm text-ink-500 dark:text-ink-500">
+        <LockIcon className="h-4 w-4 shrink-0" />
+        Your file is processed in this browser tab. It is never uploaded to a server.
+      </p>
+
+      <AdSlot />
+
+      <section aria-labelledby="about-heading" className="prose-none">
+        <h2 id="about-heading" className={heading.h2}>
+          About {tool.name}
+        </h2>
+        <div className="mt-4 space-y-4 text-[15px] leading-relaxed text-ink-600 dark:text-ink-400">
+          {about}
+        </div>
+      </section>
+
+      <Faq items={faq} />
+
+      <section aria-labelledby="related-heading" className="mt-16">
+        <h2 id="related-heading" className={heading.h2}>
+          Other PDF tools
+        </h2>
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2 stagger-slide">
+          {related.map((item) => (
+            <li key={item.href}>
+              <Link
+                to={item.href}
+                className="group flex items-center gap-3 rounded-xl bg-white px-4 py-3.5 ring-1 ring-ink-200 transition-colors hover:ring-brand-300 dark:bg-ink-900 dark:ring-ink-800 dark:hover:ring-brand-600/60"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-600/15 dark:text-brand-300">
+                  <ToolIcon name={item.icon} className="h-4.5 w-4.5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-ink-900 dark:text-white">
+                    {item.name}
+                  </span>
+                  <span className="block truncate text-xs text-ink-500 dark:text-ink-500">
+                    {item.blurb}
+                  </span>
+                </span>
+                <ArrowRightIcon className="h-4 w-4 shrink-0 text-ink-400 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-5">
+          <Link
+            to="/tools"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 dark:text-brand-300"
+          >
+            See all PDF tools
+            <ArrowRightIcon className="h-4 w-4" />
+          </Link>
+        </p>
+      </section>
+    </div>
+  );
+}
+
+/** The white panel every tool's working area sits in. */
+export function ToolPanel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-200/80 shadow-sm sm:p-7 dark:bg-ink-900/70 dark:ring-ink-800">
+      <div className="flex flex-col gap-5">{children}</div>
+    </div>
+  );
+}
+
+export function OptionGroup({
+  legend,
+  hint,
+  children,
+}: {
+  legend: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <fieldset>
+      <legend className="text-sm font-semibold text-ink-900 dark:text-white">
+        {legend}
+      </legend>
+      {hint && <p className="mt-1 text-sm text-ink-500 dark:text-ink-500">{hint}</p>}
+      <div className="mt-3">{children}</div>
+    </fieldset>
+  );
+}

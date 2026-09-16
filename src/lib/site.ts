@@ -1,0 +1,11 @@
+export const SITE_NAME = "PDF Quick Tools";
+export const SITE_TAGLINE = "Simple online tools for working with PDF files.";
+export const SITE_URL = "https://pdfquicktools.whop.site";
+export const SITE_CARD = `${SITE_URL}/og-card.jpg`;
+
+/** Where the contact form's mailto is addressed. Change this to your own inbox. */
+export const CONTACT_EMAIL = "support@aifinancepk.com";
+
+/** The single source of truth for the size limit shown to users and enforced in code. */
+export const MAX_FILE_BYTES = 50 * 1024 * 1024;
+export const MAX_FILE_LABEL = "50 MB";

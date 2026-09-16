@@ -1,0 +1,119 @@
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { ArticlePage, Block, Bullets } from "#/components/Prose";
+import { pageHead } from "#/lib/seo";
+import { MAX_FILE_LABEL, SITE_NAME } from "#/lib/site";
+
+export const Route = createFileRoute("/privacy")({
+  head: () =>
+    pageHead({
+      title: `Privacy Policy | ${SITE_NAME}`,
+      description: `How ${SITE_NAME} handles your files and your data. Files are processed in your browser and are never uploaded to a server.`,
+      path: "/privacy",
+    }),
+  component: Privacy,
+});
+
+function Privacy() {
+  return (
+    <ArticlePage
+      title="Privacy Policy"
+      intro={`How ${SITE_NAME} handles your files, and what we do and do not collect.`}
+      updated="14 September 2026"
+    >
+      <Block title="Your files are not uploaded">
+        <p>
+          Every tool on this site runs inside your own web browser, using your
+          device's own processor and memory. When you choose a PDF or an image,
+          the browser reads it locally. It is not transmitted to us, to a cloud
+          service, or to anyone else.
+        </p>
+        <p>
+          Because your file never reaches a server, there is no server copy to
+          store, no server copy to delete, and no retention period to promise
+          you. The finished document lives in your browser's memory until you
+          close or reload the tab.
+        </p>
+      </Block>
+
+      <Block title="What this means in practice">
+        <Bullets
+          items={[
+            "We cannot read the contents of your documents, because we never receive them.",
+            "We do not know the names of your files.",
+            "Nothing you process is shared with a third party, because nothing is sent anywhere.",
+            `The ${MAX_FILE_LABEL} limit exists because the work happens on your device, not because of a storage quota.`,
+            "Closing the tab removes the processed file from memory.",
+          ]}
+        />
+      </Block>
+
+      <Block title="What we do collect">
+        <p>
+          We collect anonymous usage measurements so we know which tools are
+          worth improving. These are counts of actions, not contents. For
+          example: a tool page was opened, a file was selected, processing
+          started, processing finished, processing failed, a download was
+          clicked.
+        </p>
+        <p>
+          These events include the name of the tool and basic technical details
+          such as file count and size. They do not include filenames, file
+          contents, page text, or anything extracted from your documents.
+        </p>
+      </Block>
+
+      <Block title="Cookies and local storage">
+        <p>
+          We store one small preference in your browser: whether you chose light
+          or dark mode. That is it. There is no advertising cookie set by us and
+          no cross-site tracking profile.
+        </p>
+      </Block>
+
+      <Block title="Accounts">
+        <p>
+          The tools on this site do not require an account. We do not ask for
+          your email address, your phone number, or a password, so there is no
+          account record to secure, export, or delete.
+        </p>
+      </Block>
+
+      <Block title="Advertising">
+        <p>
+          The site reserves space for advertising between content sections. If
+          advertising is enabled in future, an advertising partner may set its
+          own cookies under its own policy. Ads will never be placed next to
+          download buttons, styled to look like download buttons, or shown as
+          pop-ups or redirects.
+        </p>
+      </Block>
+
+      <Block title="Children">
+        <p>
+          These tools are general-purpose utilities and are not directed at
+          children. We do not knowingly collect personal information from
+          anyone, of any age, because we do not collect personal information at
+          all.
+        </p>
+      </Block>
+
+      <Block title="Changes to this policy">
+        <p>
+          If how the site works changes, this page changes with it, and the date
+          at the top is updated. We will not quietly start uploading files and
+          leave this page as it is.
+        </p>
+      </Block>
+
+      <Block title="Getting in touch">
+        <p>
+          Questions about this policy are welcome on the{" "}
+          <Link to="/contact" className="font-semibold text-brand-700 dark:text-brand-300">
+            contact page
+          </Link>
+          .
+        </p>
+      </Block>
+    </ArticlePage>
+  );
+}
