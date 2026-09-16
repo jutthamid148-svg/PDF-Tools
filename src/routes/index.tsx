@@ -1,13 +1,17 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdSlot } from "#/components/AdSlot";
 import { Faq } from "#/components/Faq";
 import {
   ArrowRightIcon,
   BoltIcon,
+  ChatIcon,
   CheckIcon,
   LockIcon,
+  NotesIcon,
+  QuizIcon,
   SparkIcon,
+  SummarizeIcon,
 } from "#/components/Icons";
 import { ToolCard } from "#/components/ToolCard";
 import { button, heading, muted, sectionWrap } from "#/components/ui";
@@ -103,6 +107,192 @@ function StatsBanner() {
   );
 }
 
+function FloatingAiSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close on Escape key
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsOpen(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  function scrollToSection(id: string) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setIsOpen(false);
+    }
+  }
+
+  const aiShortcuts = [
+    {
+      name: "AI Summarizer",
+      href: "/ai-summarizer",
+      desc: "Instant breakdown & key takeaways",
+      icon: SummarizeIcon,
+      color: "from-blue-500 to-indigo-600",
+    },
+    {
+      name: "AI Document Chat",
+      href: "/ai-chat",
+      desc: "Ask questions & query contents",
+      icon: ChatIcon,
+      color: "from-purple-500 to-pink-600",
+    },
+    {
+      name: "AI Quiz Maker",
+      href: "/ai-quiz",
+      desc: "Generate MCQs & test questions",
+      icon: QuizIcon,
+      color: "from-amber-500 to-orange-600",
+    },
+    {
+      name: "AI Study Notes",
+      href: "/ai-notes",
+      desc: "Turn docs into revision outlines",
+      icon: NotesIcon,
+      color: "from-emerald-500 to-teal-600",
+    },
+  ];
+
+  return (
+    <>
+      {/* Floating Trigger Button on the right edge */}
+      <div className="fixed right-4 bottom-6 sm:bottom-8 z-40 flex flex-col items-end">
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-label="Toggle AI Tools Drawer"
+          className="group relative flex items-center gap-2.5 rounded-full bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 p-3.5 sm:px-5 sm:py-3 text-white shadow-2xl shadow-purple-600/40 ring-2 ring-white/20 transition-all duration-300 hover:scale-105 hover:shadow-purple-500/60 active:scale-95"
+        >
+          <span className="relative flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-white" />
+          </span>
+          <SparkIcon className="h-5 w-5 animate-wiggle" />
+          <span className="hidden sm:inline-block text-sm font-bold tracking-wide">
+            AI Tools
+          </span>
+          <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-extrabold uppercase">
+            New
+          </span>
+        </button>
+      </div>
+
+      {/* Backdrop overlay */}
+      {isOpen && (
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="Close AI Tools Menu"
+          onClick={() => setIsOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") setIsOpen(false);
+          }}
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity"
+        />
+      )}
+
+      {/* AI Quick Drawer panel */}
+      <aside
+        className={`fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-white dark:bg-[#0d0d1a] ring-1 ring-ink-200 dark:ring-ink-800 shadow-2xl transition-transform duration-300 ease-out p-6 overflow-y-auto flex flex-col ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+        aria-label="AI Tools Quick Panel"
+      >
+        {/* Drawer Header */}
+        <div className="flex items-center justify-between pb-5 border-b border-ink-100 dark:border-ink-800">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 to-purple-600 text-white shadow-md shadow-brand-500/20">
+              <SparkIcon className="h-5 w-5 animate-float" />
+            </span>
+            <div>
+              <h3 className="font-bold text-base text-ink-900 dark:text-white">
+                AI PDF Assistant
+              </h3>
+              <p className="text-xs text-ink-500 dark:text-ink-400">
+                Instant document intelligence
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close panel"
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-300 hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Scroll action to AI section */}
+        <div className="mt-5 rounded-2xl bg-brand-50/70 p-3.5 ring-1 ring-brand-200/50 dark:bg-brand-900/20 dark:ring-brand-700/30">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">
+              ⚡ Explore all on page
+            </span>
+            <button
+              type="button"
+              onClick={() => scrollToSection("ai-tools-section")}
+              className="text-xs font-bold text-brand-600 hover:underline dark:text-brand-400"
+            >
+              Jump to Section ↓
+            </button>
+          </div>
+        </div>
+
+        {/* AI Tools Links List */}
+        <div className="mt-6 flex-1 space-y-3">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-ink-400 dark:text-ink-500">
+            Select an AI Tool
+          </p>
+          {aiShortcuts.map((tool) => (
+            <Link
+              key={tool.href}
+              to={tool.href}
+              onClick={() => setIsOpen(false)}
+              className="group flex items-start gap-3.5 rounded-2xl p-3.5 ring-1 ring-ink-200/70 hover:ring-brand-400 dark:ring-ink-800 dark:hover:ring-brand-500 transition-all duration-200 hover:bg-ink-50 dark:hover:bg-ink-900/50 hover:shadow-md"
+            >
+              <span
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tool.color} text-white shadow-sm`}
+              >
+                <tool.icon className="h-5 w-5" />
+              </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold text-ink-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                    {tool.name}
+                  </h4>
+                  <span className="text-xs text-ink-400 group-hover:translate-x-0.5 transition-transform">
+                    →
+                  </span>
+                </div>
+                <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400 truncate">
+                  {tool.desc}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Live Demo Trigger */}
+        <div className="mt-6 pt-5 border-t border-ink-100 dark:border-ink-800">
+          <button
+            type="button"
+            onClick={() => scrollToSection("ai-live-demo")}
+            className="w-full rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 py-3 text-center text-xs font-bold text-white shadow-lg shadow-brand-600/20 hover:from-brand-500 hover:to-purple-500 transition-all"
+          >
+            Try Free AI Interactive Demo 🚀
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+}
+
 function Home() {
   return (
     <>
@@ -115,6 +305,8 @@ function Home() {
           ]),
         }}
       />
+
+      <FloatingAiSidebar />
 
       <Hero />
 
@@ -163,7 +355,7 @@ function Home() {
       </section>
 
       {/* AI Tools */}
-      <section className={`${sectionWrap} mt-24 animate-blur-in`}>
+      <section id="ai-tools-section" className={`${sectionWrap} mt-24 animate-blur-in`}>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="flex items-center gap-4">
             <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 via-indigo-600 to-purple-600 text-white shadow-lg shadow-brand-500/25 animate-glow-pulse">
@@ -523,7 +715,7 @@ function AiDemo() {
   }
 
   return (
-    <section className={`${sectionWrap} mt-20`}>
+    <section id="ai-live-demo" className={`${sectionWrap} mt-20`}>
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0c0c1a] via-[#10102a] to-[#0a0f1e] p-6 sm:p-8 lg:p-10 ring-1 ring-white/[0.06] shadow-2xl shadow-brand-900/20">
         {/* Background glow */}
         <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl" />
