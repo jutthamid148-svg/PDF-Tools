@@ -4,39 +4,5 @@
   "framework": "vite",
   "installCommand": "npm install",
   "devCommand": "vite dev --port 3000",
-  "regions": ["iad1"],
-  "rewrites": [
-    {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
-    },
-    {
-      "source": "/icons/(.*)",
-      "destination": "/icons/$1"
-    },
-    {
-      "source": "/favicon.ico",
-      "destination": "/favicon.ico"
-    },
-    {
-      "source": "/favicon.svg",
-      "destination": "/favicon.svg"
-    },
-    {
-      "source": "/apple-touch-icon.png",
-      "destination": "/apple-touch-icon.png"
-    },
-    {
-      "source": "/manifest.json",
-      "destination": "/manifest.json"
-    },
-    {
-      "source": "/sw.js",
-      "destination": "/sw.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "regions": ["iad1"]
 }
