@@ -36,9 +36,10 @@ export function CookieConsent() {
           <LockIcon className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 id="cookie-title" className="text-sm font-bold text-ink-900 dark:text-white">Cookies and privacy</h2>
+          <h2 id="cookie-title" className="text-sm font-bold text-ink-900 dark:text-white">Privacy choices</h2>
           <p id="cookie-description" className="mt-1 text-xs leading-relaxed text-ink-600 dark:text-ink-300">
-            We use essential storage for preferences only. Read our{" "}
+            We use local storage for theme and consent preferences. Allowing
+            analytics sends anonymous tool usage events only. Read our{" "}
             <Link to="/privacy" className="font-semibold text-brand-700 underline underline-offset-2 dark:text-brand-300">Privacy Policy</Link>.
           </p>
         </div>
@@ -47,8 +48,8 @@ export function CookieConsent() {
         </button>
       </div>
       <div className="mt-4 flex flex-wrap justify-end gap-2 sm:pl-8">
-        <button type="button" onClick={() => choose("declined")} className={button("secondary", "sm")}>Decline</button>
-        <button type="button" onClick={() => choose("accepted")} className={button("primary", "sm")}>Accept cookies</button>
+        <button type="button" onClick={() => choose("declined")} className={button("secondary", "sm")}>Continue without analytics</button>
+        <button type="button" onClick={() => choose("accepted")} className={button("primary", "sm")}>Allow anonymous analytics</button>
       </div>
     </div>
   );

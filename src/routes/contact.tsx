@@ -31,7 +31,6 @@ function Contact() {
   function send(event: React.FormEvent) {
     event.preventDefault();
     track("contact", { subject });
-    if (email.trim().length > 0) track("identify", { email: email.trim() });
 
     const body = `${message}\n\n---\nReply to: ${email || "(not given)"}`;
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(

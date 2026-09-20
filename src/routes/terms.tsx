@@ -60,6 +60,16 @@ function Terms() {
         </p>
       </Block>
 
+      <Block title="AI-generated results">
+        <p>
+          AI tools use extracted document text to produce summaries, answers,
+          translations, rewrites, citations, analyses, study materials, and
+          other suggestions. AI output is not professional, legal, medical,
+          financial, academic, or hiring advice. Check every result against the
+          original document before relying on it.
+        </p>
+      </Block>
+
       <Block title="Availability and changes">
         <p>
           Tools may be added, changed or withdrawn. We may update these terms;

@@ -7,7 +7,7 @@ export const Route = createFileRoute("/privacy")({
   head: () =>
     pageHead({
       title: `Privacy Policy | ${SITE_NAME}`,
-      description: `How ${SITE_NAME} handles your files and your data. Files are processed in your browser and are never uploaded to a server.`,
+      description: `How ${SITE_NAME} handles your files, AI-extracted text, analytics, and privacy choices.`,
       path: "/privacy",
     }),
   component: Privacy,
@@ -24,23 +24,37 @@ function Privacy() {
         <p>
           Every tool on this site runs inside your own web browser, using your
           device's own processor and memory. When you choose a PDF or an image,
-          the browser reads it locally. It is not transmitted to us, to a cloud
-          service, or to anyone else.
+          the browser reads it locally. For non-AI PDF tools, the original file
+          is not transmitted to us or stored on our servers.
         </p>
         <p>
-          Because your file never reaches a server, there is no server copy to
-          store, no server copy to delete, and no retention period to promise
-          you. The finished document lives in your browser's memory until you
-          close or reload the tab.
+          The finished document lives in your browser's memory until you close or
+          reload the tab. There is no server copy of the original file to store,
+          delete, or retain.
+        </p>
+      </Block>
+
+      <Block title="AI tools and extracted text">
+        <p>
+          When you choose an AI tool, text extracted from your PDF is sent to our
+          server-side AI endpoint to generate the requested response. The
+          original PDF remains in your browser, but the extracted text is
+          processed by our AI provider for that request. Do not use an AI tool
+          with information you are not permitted to share with an AI service.
+        </p>
+        <p>
+          AI responses can be incomplete or incorrect. We do not use uploaded
+          documents or extracted text to build a user profile, and we do not
+          store document text in this site's application storage.
         </p>
       </Block>
 
       <Block title="What this means in practice">
         <Bullets
           items={[
-            "We cannot read the contents of your documents, because we never receive them.",
+            "For regular PDF tools, we cannot read your document contents because the original file stays in your browser.",
             "We do not know the names of your files.",
-            "Nothing you process is shared with a third party, because nothing is sent anywhere.",
+            "AI tools send extracted text to the AI service only when you explicitly run an AI action.",
             `The ${MAX_FILE_LABEL} limit exists because the work happens on your device, not because of a storage quota.`,
             "Closing the tab removes the processed file from memory.",
           ]}
@@ -58,14 +72,18 @@ function Privacy() {
         <p>
           These events include the name of the tool and basic technical details
           such as file count and size. They do not include filenames, file
-          contents, page text, or anything extracted from your documents.
+          contents, page text, email addresses, or anything extracted from your
+          documents. Analytics events are sent only after you choose to allow
+          analytics in the consent notice.
         </p>
       </Block>
 
       <Block title="Cookies and local storage">
         <p>
-          We store one small preference in your browser: whether you chose light
-          or dark mode. No tracking cookies are used for advertising.
+          We store small preferences in your browser for theme and consent
+          choices. If you allow analytics, an anonymous consent preference lets
+          us measure tool usage. No advertising tracking cookies are used by the
+          site.
         </p>
       </Block>
 

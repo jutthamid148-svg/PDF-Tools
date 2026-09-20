@@ -7,11 +7,16 @@ declare global {
 }
 
 /**
- * Anonymous product events only: which tool, how many files, how big, whether
- * it worked. No filenames, no file contents, nothing identifying.
+ * Anonymous product events only after the visitor allows analytics. No
+ * filenames, file contents, document text, or contact details are sent.
  */
 export function track(event: string, data?: Record<string, unknown>): void {
   if (typeof window === "undefined") return;
+  try {
+    if (window.localStorage.getItem("pqt-cookie-consent") !== "accepted") return;
+  } catch {
+    return;
+  }
   window.whop?.track(event, data);
 }
 
