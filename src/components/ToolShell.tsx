@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { toolEvents } from "#/lib/analytics";
 import { faqJsonLd, softwareJsonLd, type FaqItem } from "#/lib/seo";
 import { relatedTools, type Tool } from "#/lib/tools";
-import { AdSlot } from "./AdSlot";
 import { Faq } from "./Faq";
 import { ArrowRightIcon, LockIcon, ToolIcon } from "./Icons";
 import { heading, muted } from "./ui";
@@ -23,6 +22,7 @@ export function ToolShell({ tool, children, about, faq }: ToolShellProps) {
   }, [tool.name]);
 
   const related = relatedTools(tool.href);
+  const isAiTool = tool.category === "AI Tools";
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
@@ -75,10 +75,10 @@ export function ToolShell({ tool, children, about, faq }: ToolShellProps) {
 
       <p className="mt-5 flex items-center justify-center gap-2 text-center text-sm text-ink-500 dark:text-ink-500">
         <LockIcon className="h-4 w-4 shrink-0" />
-        Your file is processed in this browser tab. It is never uploaded to a server.
+        {isAiTool
+          ? "Your original PDF stays in this browser. Extracted text is sent to the AI service only when you run an AI action."
+          : "Your file is processed in this browser tab. It is never uploaded to a server."}
       </p>
-
-      <AdSlot />
 
       <section aria-labelledby="about-heading" className="prose-none">
         <h2 id="about-heading" className={heading.h2}>

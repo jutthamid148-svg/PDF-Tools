@@ -97,6 +97,17 @@ export function RotateIcon(props: IconProps) {
   );
 }
 
+export function ReorderIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="4" y="4" width="11" height="7" rx="1.5" />
+      <rect x="9" y="13" width="11" height="7" rx="1.5" />
+      <path d="M18 7h2" />
+      <path d="m18 5 2 2-2 2" />
+    </Svg>
+  );
+}
+
 export function DeleteIcon(props: IconProps) {
   return (
     <Svg {...props}>
@@ -116,6 +127,37 @@ export function ExtractIcon(props: IconProps) {
       <rect x="10" y="10" width="10" height="11" rx="2" />
       <path d="M13 15h4" />
       <path d="M13 18h4" />
+    </Svg>
+  );
+}
+
+export function PageNumbersIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+      <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+      <path d="M8 12h8" />
+      <path d="M8 16h3" />
+      <path d="M16 16h.01" />
+    </Svg>
+  );
+}
+
+export function WatermarkIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 5h16v14H4z" />
+      <path d="m7 16 10-8" />
+      <path d="M7 9h.01M17 15h.01" />
+    </Svg>
+  );
+}
+
+export function SignIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 19c3-5 4-9 6-9s-1 6 1 6 3-5 5-5 0 4 4 4" />
+      <path d="M4 21h16" />
     </Svg>
   );
 }
@@ -222,6 +264,15 @@ export function ArrowRightIcon(props: IconProps) {
     <Svg {...props}>
       <path d="M4 12h15" />
       <path d="m13 6 6 6-6 6" />
+    </Svg>
+  );
+}
+
+export function SearchIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4 4" />
     </Svg>
   );
 }
@@ -404,14 +455,28 @@ const TOOL_ICONS: Record<ToolIconName, (props: IconProps) => React.ReactElement>
   toJpg: ToJpgIcon,
   toPdf: ToPdfIcon,
   rotate: RotateIcon,
+  reorder: ReorderIcon,
   delete: DeleteIcon,
   extract: ExtractIcon,
+  pageNumbers: PageNumbersIcon,
+  watermark: WatermarkIcon,
+  sign: SignIcon,
   summarize: SummarizeIcon,
   chat: ChatIcon,
   quiz: QuizIcon,
   notes: NotesIcon,
   brain: BrainIcon,
   wand: WandIcon,
+  translate: BrainIcon,
+  rewrite: WandIcon,
+  ask: ChatIcon,
+  presentation: NotesIcon,
+  flashcard: QuizIcon,
+  citation: NotesIcon,
+  grammar: WandIcon,
+  analyze: BrainIcon,
+  resume: NotesIcon,
+  questions: QuizIcon,
 };
 
 export function ToolIcon({

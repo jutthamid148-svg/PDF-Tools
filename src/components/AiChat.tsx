@@ -1,6 +1,6 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { button, cx } from "#/components/ui";
-import { SendIcon, BotIcon } from "#/components/Icons";
+import { AlertIcon, BotIcon, RefreshIcon, SendIcon } from "#/components/Icons";
 
 export interface ChatMessage {
   role: "user" | "assistant";
@@ -13,15 +13,28 @@ interface AiChatProps {
   messages: ChatMessage[];
   isLoading: boolean;
   suggestedQuestions?: string[];
+  error?: string | null;
+  onRetry?: () => void;
 }
 
-export function AiChat({ onSend, messages, isLoading, suggestedQuestions }: AiChatProps) {
+export function AiChat({
+  onSend,
+  messages,
+  isLoading,
+  suggestedQuestions,
+  error,
+  onRetry,
+}: AiChatProps) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [isLoading, messages, scrollToBottom]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -30,31 +43,33 @@ export function AiChat({ onSend, messages, isLoading, suggestedQuestions }: AiCh
       if (!trimmed || isLoading) return;
       setInput("");
       onSend(trimmed);
-      setTimeout(scrollToBottom, 50);
     },
-    [input, isLoading, onSend, scrollToBottom],
+    [input, isLoading, onSend],
   );
 
   const handleSuggestion = useCallback(
     (question: string) => {
       if (isLoading) return;
       onSend(question);
-      setTimeout(scrollToBottom, 50);
     },
-    [isLoading, onSend, scrollToBottom],
+    [isLoading, onSend],
   );
 
   return (
     <div className="flex flex-col">
       {/* Messages area */}
-      <div className="max-h-[400px] min-h-[200px] space-y-4 overflow-y-auto rounded-2xl bg-ink-50/50 p-4 dark:bg-ink-900/40">
+      <div
+        className="max-h-[400px] min-h-[200px] space-y-4 overflow-y-auto rounded-2xl bg-ink-50/50 p-4 dark:bg-ink-900/40"
+        aria-label="Chat conversation"
+      >
         {messages.length === 0 && suggestedQuestions && suggestedQuestions.length > 0 && (
           <div className="space-y-2">
             <p className="text-sm text-ink-500 dark:text-ink-400">Suggested questions:</p>
-            {suggestedQuestions.map((q, i) => (
+            {suggestedQuestions.map((q) => (
               <button
-                key={i}
+                key={q}
                 type="button"
+                disabled={isLoading}
                 onClick={() => handleSuggestion(q)}
                 className="block w-full rounded-xl bg-white px-4 py-3 text-left text-sm text-ink-700 ring-1 ring-ink-200 transition-colors hover:bg-brand-50 hover:text-brand-700 hover:ring-brand-200 dark:bg-ink-800 dark:text-ink-200 dark:ring-ink-700 dark:hover:bg-brand-600/10 dark:hover:text-brand-300 dark:hover:ring-brand-600/30"
               >
@@ -105,12 +120,36 @@ export function AiChat({ onSend, messages, isLoading, suggestedQuestions }: AiCh
           </div>
         )}
 
+        {error && (
+          <div
+            className="flex gap-3 rounded-2xl bg-red-50 p-3 text-sm text-red-800 ring-1 ring-red-200 dark:bg-red-950/30 dark:text-red-200 dark:ring-red-900/60"
+            role="alert"
+          >
+            <AlertIcon className="mt-0.5 h-4 w-4 shrink-0" />
+            <span className="min-w-0 flex-1">{error}</span>
+            {onRetry && (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-red-800 hover:bg-red-100 dark:text-red-200 dark:hover:bg-red-900/40"
+              >
+                <RefreshIcon className="h-3.5 w-3.5" />
+                Retry
+              </button>
+            )}
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input area */}
       <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
+        <label htmlFor="ai-chat-question" className="sr-only">
+          Ask a question about this PDF
+        </label>
         <input
+          id="ai-chat-question"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -122,10 +161,14 @@ export function AiChat({ onSend, messages, isLoading, suggestedQuestions }: AiCh
           type="submit"
           disabled={isLoading || !input.trim()}
           className={button("primary", "md")}
+          aria-label="Send question"
         >
           <SendIcon className="h-4 w-4" />
         </button>
       </form>
+      <p className="sr-only" aria-live="polite">
+        {isLoading ? "AI is preparing an answer." : ""}
+      </p>
     </div>
   );
 }

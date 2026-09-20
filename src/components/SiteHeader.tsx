@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SITE_NAME } from "#/lib/site";
-import { CloseIcon, MenuIcon, PdfFileIcon } from "./Icons";
+import { CloseIcon, MenuIcon } from "./Icons";
+import { BrandMark } from "./BrandMark";
 import { ThemeToggle } from "./ThemeToggle";
 import { button, cx } from "./ui";
 
@@ -38,9 +39,7 @@ export function SiteHeader() {
           to="/"
           className="flex shrink-0 items-center gap-2 rounded-lg text-ink-900 dark:text-white"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white hover:animate-wiggle">
-            <PdfFileIcon className="h-5 w-5" />
-          </span>
+          <BrandMark />
           <span className="text-[17px] font-bold tracking-tight line-grow">{SITE_NAME}</span>
         </Link>
 

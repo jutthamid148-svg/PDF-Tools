@@ -1,8 +1,9 @@
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { toolEvents } from "#/lib/analytics";
 import {
   IMAGE_ACCEPT,
   PDF_ACCEPT,
+  sanitizeFilename,
   toAcceptedFile,
   validateFile,
   type AcceptedFile,
@@ -13,7 +14,7 @@ import { ImageFileIcon, PdfFileIcon, UploadIcon } from "./Icons";
 import { button, cx } from "./ui";
 
 interface FileUploaderProps {
-  kind: FileKind;
+  kind: FileKind | "document";
   multiple?: boolean;
   toolName: string;
   onFiles: (files: AcceptedFile[]) => void;
@@ -35,11 +36,25 @@ export function FileUploader({
 }: FileUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [dropSuccess, setDropSuccess] = useState(false);
+  const [sourceLoading, setSourceLoading] = useState(false);
   const depth = useRef(0);
   const inputId = useId();
   const hintId = useId();
 
-  const noun = kind === "pdf" ? "PDF" : "image";
+  const noun = kind === "pdf" ? "PDF" : kind === "image" ? "image" : "PDF or image";
+  const acceptedKind = kind === "document" ? undefined : kind;
+  const sourceUrl = useMemo(() => {
+    if (kind !== "pdf" && kind !== "document") return null;
+    const value = new URLSearchParams(window.location.search).get("sourceUrl");
+    if (!value) return null;
+    try {
+      const url = new URL(value);
+      return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : null;
+    } catch {
+      return null;
+    }
+  }, [kind]);
 
   const accept = useCallback(
     (list: FileList | null) => {
@@ -49,13 +64,19 @@ export function FileUploader({
       const problems: string[] = [];
 
       for (const file of incoming) {
-        const problem = validateFile(file, kind);
+        const problem = acceptedKind
+          ? validateFile(file, acceptedKind)
+          : file.type === "application/pdf" || file.type.startsWith("image/")
+            ? null
+            : "Choose a PDF or image file.";
         if (problem) problems.push(problem);
         else good.push(toAcceptedFile(file));
       }
 
       if (problems.length > 0) onRejected(problems[0]);
       if (good.length > 0) {
+        setDropSuccess(true);
+        window.setTimeout(() => setDropSuccess(false), 900);
         toolEvents.fileSelected(
           toolName,
           good.length,
@@ -64,11 +85,48 @@ export function FileUploader({
         onFiles(good);
       }
     },
-    [kind, multiple, onFiles, onRejected, toolName],
+    [acceptedKind, kind, multiple, onFiles, onRejected, toolName],
   );
+
+  const useSourcePdf = useCallback(async () => {
+    if (!sourceUrl || sourceLoading) return;
+    setSourceLoading(true);
+    try {
+      const response = await fetch(sourceUrl, { method: "GET", credentials: "omit" });
+      if (!response.ok) {
+        throw new Error("The PDF link could not be opened. It may require a login or block cross-site access.");
+      }
+      const blob = await response.blob();
+      const pathName = new URL(sourceUrl).pathname.split("/").pop() || "current-document.pdf";
+      const fileName = `${sanitizeFilename(pathName, "current-document")}.pdf`;
+      const file = new File([blob], fileName, { type: "application/pdf" });
+      const problem = validateFile(file, "pdf");
+      if (problem) throw new Error(problem);
+      toolEvents.fileSelected(toolName, 1, file.size);
+      onFiles([toAcceptedFile(file)]);
+    } catch (error) {
+      onRejected(error instanceof Error ? error.message : "This PDF could not be loaded from the current page.");
+    } finally {
+      setSourceLoading(false);
+    }
+  }, [onFiles, onRejected, sourceLoading, sourceUrl, toolName]);
 
   return (
     <div>
+      <input
+        ref={inputRef}
+        id={inputId}
+        type="file"
+        className="peer sr-only"
+        accept={kind === "pdf" ? PDF_ACCEPT : kind === "image" ? IMAGE_ACCEPT : `${PDF_ACCEPT},${IMAGE_ACCEPT}`}
+        multiple={multiple}
+        aria-describedby={hintId}
+        onChange={(event) => {
+          accept(event.target.files);
+          // Allow re-picking the same file after a reset.
+          event.target.value = "";
+        }}
+      />
       <label
         htmlFor={inputId}
         onDragEnter={(event) => {
@@ -92,23 +150,32 @@ export function FileUploader({
           accept(event.dataTransfer.files);
         }}
         className={cx(
-          "flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed text-center transition-all duration-300 animate-blur-in",
+          "dropzone-motion relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed text-center transition-all duration-300 animate-blur-in transform-gpu will-change-transform peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-600 dark:peer-focus-visible:outline-brand-400",
           compact ? "gap-2 px-5 py-8" : "gap-3 px-6 py-12 sm:py-16",
           dragging
-            ? "border-brand-500 bg-brand-50 upload-pulse dark:border-brand-400 dark:bg-brand-600/10"
+            ? "is-dragging border-[#3B82F6] bg-brand-50 scale-[1.02] upload-pulse dark:border-[#3B82F6] dark:bg-brand-600/10"
+            : dropSuccess
+              ? "is-drop-success border-emerald-500 bg-emerald-50 dark:border-emerald-400 dark:bg-emerald-950/20"
             : "border-ink-300 bg-ink-50/60 hover:border-brand-400 hover:bg-brand-50/50 dark:border-ink-700 dark:bg-ink-900/40 dark:hover:border-brand-500 dark:hover:bg-brand-600/5",
         )}
       >
+        {dropSuccess && (
+          <span className="pointer-events-none absolute inset-0" aria-hidden="true">
+            {Array.from({ length: 8 }, (_, index) => (
+              <i key={index} className={`confetti confetti-${index + 1}`} />
+            ))}
+          </span>
+        )}
         <span
           className={cx(
             "flex items-center justify-center rounded-2xl bg-white text-brand-600 ring-1 ring-ink-200 dark:bg-ink-800 dark:text-brand-300 dark:ring-ink-700",
             compact ? "h-11 w-11" : "h-14 w-14",
           )}
         >
-          {kind === "pdf" ? (
-            <PdfFileIcon className={compact ? "h-5 w-5" : "h-6 w-6"} />
+          {kind === "image" ? (
+            <ImageFileIcon className={cx(compact ? "h-5 w-5" : "h-6 w-6", dragging && "upload-arrow" )} />
           ) : (
-            <ImageFileIcon className={compact ? "h-5 w-5" : "h-6 w-6"} />
+            <PdfFileIcon className={cx(compact ? "h-5 w-5" : "h-6 w-6", dragging && "upload-arrow" )} />
           )}
         </span>
 
@@ -131,21 +198,17 @@ export function FileUploader({
           {hint ?? `Maximum size: ${MAX_FILE_LABEL} per file`}
         </span>
       </label>
-
-      <input
-        ref={inputRef}
-        id={inputId}
-        type="file"
-        className="sr-only"
-        accept={kind === "pdf" ? PDF_ACCEPT : IMAGE_ACCEPT}
-        multiple={multiple}
-        aria-describedby={hintId}
-        onChange={(event) => {
-          accept(event.target.files);
-          // Allow re-picking the same file after a reset.
-          event.target.value = "";
-        }}
-      />
+      {sourceUrl && (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-brand-50 px-4 py-3 ring-1 ring-brand-100 dark:bg-brand-600/10 dark:ring-brand-600/25">
+          <span className="min-w-0 text-left">
+            <span className="block text-sm font-semibold text-brand-900 dark:text-brand-100">PDF link detected</span>
+            <span className="block max-w-[18rem] truncate text-xs text-brand-700 dark:text-brand-300">Choose it from the current page</span>
+          </span>
+          <button type="button" onClick={useSourcePdf} disabled={sourceLoading} className={button("primary", "sm")}>
+            {sourceLoading ? "Loading..." : "Use this PDF"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

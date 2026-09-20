@@ -4,6 +4,7 @@ import { FileUploader } from "#/components/FileUploader";
 import { ProgressBar, ErrorMessage } from "#/components/ToolFeedback";
 import { ToolPanel, ToolShell } from "#/components/ToolShell";
 import { button } from "#/components/ui";
+import { GenerateButton } from "#/components/GenerateButton";
 import { useToolRun } from "#/hooks/useToolRun";
 import { type AcceptedFile, FriendlyError } from "#/lib/files";
 import { pageHead } from "#/lib/seo";
@@ -167,13 +168,7 @@ function AiSummarizerPage() {
 
             {!busy && run.status !== "error" && (
               <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={handleSummarize}
-                  className={button("primary", "lg")}
-                >
-                  ✨ Summarize with AI
-                </button>
+                <GenerateButton onClick={handleSummarize}>Summarize with AI</GenerateButton>
                 <button
                   type="button"
                   onClick={startOver}

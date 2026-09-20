@@ -18,6 +18,7 @@ interface AiQuizPanelProps {
 export function AiQuizPanel({ questions, onRegenerate }: AiQuizPanelProps) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [flipped, setFlipped] = useState<Record<number, boolean>>({});
 
   const handleAnswer = useCallback((index: number, answer: string) => {
     setAnswers((prev) => ({ ...prev, [index]: answer }));
@@ -30,6 +31,7 @@ export function AiQuizPanel({ questions, onRegenerate }: AiQuizPanelProps) {
   const handleReset = useCallback(() => {
     setAnswers({});
     setShowResults(false);
+    setFlipped({});
   }, []);
 
   const score = questions.reduce((acc, q, i) => {
@@ -64,9 +66,12 @@ export function AiQuizPanel({ questions, onRegenerate }: AiQuizPanelProps) {
       {questions.map((q, i) => (
         <div
           key={i}
-          className="rounded-2xl bg-white p-5 ring-1 ring-ink-200/80 dark:bg-ink-900/70 dark:ring-ink-800"
+          className={cx("quiz-card rounded-2xl bg-white p-5 ring-1 ring-ink-200/80 dark:bg-ink-900/70 dark:ring-ink-800", flipped[i] && "is-flipped")}
+          onClick={() => showResults && setFlipped((current) => ({ ...current, [i]: !current[i] }))}
         >
-          <div className="flex items-start gap-3">
+          <div className="quiz-card-inner">
+            <div className="quiz-card-face quiz-card-front">
+              <div className="flex items-start gap-3">
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-700 dark:bg-brand-600/20 dark:text-brand-300">
               <ListIcon className="h-4 w-4" />
             </span>
@@ -160,6 +165,13 @@ export function AiQuizPanel({ questions, onRegenerate }: AiQuizPanelProps) {
                   {q.explanation}
                 </div>
               )}
+            </div>
+              </div>
+            </div>
+            <div className="quiz-card-face quiz-card-back">
+              <span className="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-300">Answer explanation</span>
+              <p className="mt-3 text-sm leading-relaxed text-ink-700 dark:text-ink-200">{q.explanation}</p>
+              <p className="mt-5 text-xs font-medium text-ink-500 dark:text-ink-400">Click to return to the question</p>
             </div>
           </div>
         </div>

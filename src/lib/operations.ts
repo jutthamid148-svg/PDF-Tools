@@ -194,6 +194,31 @@ export async function keepPages(
   );
 }
 
+export async function rearrangePages(
+  file: File,
+  indexes: number[],
+  report: Report,
+): Promise<ResultFile> {
+  if (indexes.length === 0) return friendly("Add at least one page to the new order.");
+
+  report(15, "Reading your PDF");
+  const { doc, pageCount } = await openForEdit(file);
+  if (indexes.length !== pageCount || new Set(indexes).size !== pageCount) {
+    return friendly("Every page must appear exactly once in the new order.");
+  }
+
+  const { PDFDocument } = await loadPdfLib();
+  const target = await PDFDocument.create();
+  report(50, "Reordering your pages");
+  const pages = await target.copyPages(doc, indexes);
+  for (const page of pages) target.addPage(page);
+
+  report(90, "Writing the reordered PDF");
+  const bytes = await save(target);
+  const name = sanitizeFilename(file.name, "document");
+  return makeResult(toBlobPart(bytes), `${name}-rearranged.pdf`, PDF_MIME);
+}
+
 /** One separate PDF per selected page. More than one comes back as a zip. */
 export async function splitToSinglePages(
   file: File,
@@ -295,6 +320,175 @@ export async function rotatePdf(
     `${name}-rotated.pdf`,
     PDF_MIME,
   );
+}
+
+/* ------------------------------------------------------------- page numbers */
+
+export type PageNumberPosition =
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
+
+export interface PageNumberOptions {
+  position: PageNumberPosition;
+  startAt: number;
+}
+
+/**
+ * Writes sequential page labels onto the selected pages without flattening or
+ * re-rendering their existing contents.
+ */
+export async function addPageNumbers(
+  file: File,
+  indexes: number[],
+  options: PageNumberOptions,
+  report: Report,
+): Promise<ResultFile> {
+  if (indexes.length === 0) {
+    return friendly("Select at least one page to number.");
+  }
+  if (!Number.isInteger(options.startAt) || options.startAt < 1) {
+    return friendly("Enter a whole starting number of 1 or more.");
+  }
+
+  report(12, "Reading your PDF");
+  const { doc, pageCount } = await openForEdit(file);
+  const outOfRange = indexes.find((index) => index < 0 || index >= pageCount);
+  if (outOfRange !== undefined) {
+    return friendly(
+      `Page ${outOfRange + 1} does not exist. This PDF has ${pageCount} page${pageCount === 1 ? "" : "s"}.`,
+    );
+  }
+
+  const { StandardFonts, rgb } = await loadPdfLib();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const fontSize = 11;
+  const edge = 36;
+
+  for (const [order, index] of indexes.entries()) {
+    const page = doc.getPage(index);
+    const label = String(options.startAt + order);
+    const { width } = page.getSize();
+    const labelWidth = font.widthOfTextAtSize(label, fontSize);
+    const x =
+      options.position === "bottom-left"
+        ? edge
+        : options.position === "bottom-right"
+          ? width - labelWidth - edge
+          : (width - labelWidth) / 2;
+
+    page.drawText(label, {
+      x,
+      y: 24,
+      size: fontSize,
+      font,
+      color: rgb(0.2, 0.24, 0.32),
+    });
+    report(
+      18 + ((order + 1) / indexes.length) * 72,
+      `Numbering page ${order + 1} of ${indexes.length}`,
+    );
+  }
+
+  report(94, "Writing your numbered PDF");
+  const bytes = await save(doc);
+  const name = sanitizeFilename(file.name, "document");
+  return makeResult(toBlobPart(bytes), `${name}-numbered.pdf`, PDF_MIME);
+}
+
+/* --------------------------------------------------------------- watermark */
+
+export interface WatermarkOptions {
+  text: string;
+  fontSize: number;
+  angle: number;
+  opacity: number;
+  color: [number, number, number];
+}
+
+export async function watermarkPdf(
+  file: File,
+  indexes: number[],
+  options: WatermarkOptions,
+  report: Report,
+): Promise<ResultFile> {
+  const text = options.text.trim();
+  if (indexes.length === 0) return friendly("Select at least one page to watermark.");
+  if (!text) return friendly("Enter watermark text before continuing.");
+
+  report(12, "Reading your PDF");
+  const { doc, pageCount } = await openForEdit(file);
+  const { StandardFonts, degrees, rgb } = await loadPdfLib();
+  const font = await doc.embedFont(StandardFonts.HelveticaBold);
+  const safeSize = Math.min(96, Math.max(8, options.fontSize));
+  const safeOpacity = Math.min(1, Math.max(0.05, options.opacity));
+  const safeAngle = Math.min(180, Math.max(-180, options.angle));
+  const [red, green, blue] = options.color;
+
+  for (const [position, index] of indexes.entries()) {
+    if (index < 0 || index >= pageCount) continue;
+    const page = doc.getPage(index);
+    const { width, height } = page.getSize();
+    const textWidth = font.widthOfTextAtSize(text, safeSize);
+    page.drawText(text, {
+      x: (width - textWidth) / 2,
+      y: height / 2,
+      size: safeSize,
+      font,
+      rotate: degrees(safeAngle),
+      color: rgb(red, green, blue),
+      opacity: safeOpacity,
+    });
+    report(18 + ((position + 1) / indexes.length) * 72, `Watermarking page ${position + 1} of ${indexes.length}`);
+  }
+
+  report(94, "Writing your watermarked PDF");
+  const bytes = await save(doc);
+  const name = sanitizeFilename(file.name, "document");
+  return makeResult(toBlobPart(bytes), `${name}-watermarked.pdf`, PDF_MIME);
+}
+
+/* ------------------------------------------------------------------- sign */
+
+async function dataUrlBytes(dataUrl: string): Promise<Uint8Array> {
+  const response = await fetch(dataUrl);
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+export async function signPdf(
+  file: File,
+  indexes: number[],
+  signatureDataUrl: string,
+  report: Report,
+): Promise<ResultFile> {
+  if (indexes.length === 0) return friendly("Select at least one page to sign.");
+  if (!signatureDataUrl.startsWith("data:image/png")) {
+    return friendly("Draw your signature before continuing.");
+  }
+
+  report(12, "Reading your PDF");
+  const { doc, pageCount } = await openForEdit(file);
+  const signature = await doc.embedPng(await dataUrlBytes(signatureDataUrl));
+
+  for (const [position, index] of indexes.entries()) {
+    if (index < 0 || index >= pageCount) continue;
+    const page = doc.getPage(index);
+    const { width } = page.getSize();
+    const signatureWidth = Math.min(180, width * 0.34);
+    const signatureHeight = signatureWidth * (signature.height / signature.width);
+    page.drawImage(signature, {
+      x: width - signatureWidth - 36,
+      y: 36,
+      width: signatureWidth,
+      height: signatureHeight,
+    });
+    report(18 + ((position + 1) / indexes.length) * 72, `Signing page ${position + 1} of ${indexes.length}`);
+  }
+
+  report(94, "Writing your signed PDF");
+  const bytes = await save(doc);
+  const name = sanitizeFilename(file.name, "document");
+  return makeResult(toBlobPart(bytes), `${name}-signed.pdf`, PDF_MIME);
 }
 
 /* ---------------------------------------------------------------- pdf to jpg */

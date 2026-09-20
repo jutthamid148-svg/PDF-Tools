@@ -71,7 +71,7 @@ export function FileList({
               onClick={() => onRemove(item.id)}
               disabled={disabled}
               aria-label={`Remove ${item.name}`}
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-40 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-40 dark:hover:bg-red-950/40 dark:hover:text-red-400"
             >
               <CloseIcon className="h-4 w-4" />
             </button>
@@ -100,7 +100,7 @@ function ReorderButton({
       disabled={disabled}
       aria-label={label}
       className={cx(
-        "inline-flex h-8 w-7 items-center justify-center rounded-lg text-ink-500 transition-colors",
+        "inline-flex h-10 w-9 items-center justify-center rounded-lg text-ink-500 transition-colors",
         "hover:bg-ink-100 hover:text-ink-900 disabled:opacity-30 dark:hover:bg-ink-800 dark:hover:text-white",
       )}
     >

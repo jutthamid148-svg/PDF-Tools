@@ -29,18 +29,26 @@ export function PagePicker({
 }: PagePickerProps) {
   return (
     <fieldset disabled={disabled}>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <legend className="text-sm font-semibold text-ink-900 dark:text-white">
-            {legend}
-          </legend>
-          {hint && <p className="mt-1 text-sm text-ink-500 dark:text-ink-500">{hint}</p>}
-        </div>
+      <legend className="text-sm font-semibold text-ink-900 dark:text-white">
+        {legend}
+      </legend>
+      <div className="mt-1 flex flex-wrap items-end justify-between gap-3">
+        {hint && <p className="text-sm text-ink-500 dark:text-ink-500">{hint}</p>}
         <div className="flex gap-2">
-          <button type="button" onClick={onSelectAll} className={button("secondary", "sm")}>
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={onSelectAll}
+            className={button("secondary", "sm")}
+          >
             Select all
           </button>
-          <button type="button" onClick={onSelectNone} className={button("ghost", "sm")}>
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={onSelectNone}
+            className={button("ghost", "sm")}
+          >
             Clear
           </button>
         </div>
@@ -61,6 +69,7 @@ export function PagePicker({
                       : "ring-2 ring-brand-500 dark:ring-brand-400"
                     : "ring-ink-200 hover:ring-ink-300 dark:ring-ink-700 dark:hover:ring-ink-600",
                   disabled && "cursor-not-allowed opacity-60",
+                  "focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-600 dark:focus-within:outline-brand-400",
                   "dark:bg-ink-900",
                 )}
               >

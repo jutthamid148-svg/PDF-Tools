@@ -1,24 +1,19 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { AdSlot } from "#/components/AdSlot";
+import { useState } from "react";
 import { Faq } from "#/components/Faq";
 import {
   ArrowRightIcon,
   BoltIcon,
-  ChatIcon,
   CheckIcon,
   LockIcon,
-  NotesIcon,
-  QuizIcon,
   SparkIcon,
-  SummarizeIcon,
 } from "#/components/Icons";
 import { ToolCard } from "#/components/ToolCard";
 import { button, heading, muted, sectionWrap } from "#/components/ui";
-import { callGemini } from "#/lib/ai";
+import { callGemini, extractPdfText, type AiAttachment } from "#/lib/ai";
 import { faqJsonLd, pageHead, softwareJsonLd, type FaqItem } from "#/lib/seo";
 import { MAX_FILE_LABEL, SITE_NAME } from "#/lib/site";
-import { TOOLS, toolByHref } from "#/lib/tools";
+import { TOOLS } from "#/lib/tools";
 
 const TITLE = `${SITE_NAME} — Free Online PDF Tools`;
 const DESCRIPTION =
@@ -62,23 +57,18 @@ const FAQ: FaqItem[] = [
   {
     question: "What happens to my files?",
     answer:
-      "Nothing leaves your device. Every tool runs inside your own browser tab, so there is no upload, no server copy and nothing to delete afterwards.",
+      "PDF tools process your file inside your browser, with no file upload or server copy. When you choose an AI tool, its extracted text is sent to the AI service to create the response; your original PDF stays on your device.",
   },
 ];
 
 const popular = TOOLS.filter((tool) => tool.popular);
 
-const aiTools = [
-  toolByHref("/ai-summarizer"),
-  toolByHref("/ai-chat"),
-  toolByHref("/ai-quiz"),
-  toolByHref("/ai-notes"),
-];
+const aiTools = TOOLS.filter((tool) => tool.category === "AI Tools");
 
 const STATS = [
   { value: "100%", label: "Client-Side Privacy", sub: "Files never hit servers" },
   { value: "0 sec", label: "Queue Wait Time", sub: "Instant local execution" },
-  { value: "12+", label: "Essential PDF Tools", sub: "Including Next-Gen AI" },
+  { value: "13+", label: "Essential PDF Tools", sub: "Including Next-Gen AI" },
   { value: "Free", label: "No Subscriptions", sub: "No watermarks or limits" },
 ];
 
@@ -86,7 +76,7 @@ function StatsBanner() {
   return (
     <section className={`${sectionWrap} mt-12 mb-4`}>
       <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-        {STATS.map((stat, idx) => (
+        {STATS.map((stat) => (
           <div
             key={stat.label}
             className="group relative overflow-hidden rounded-2xl bg-white/70 p-6 text-center ring-1 ring-ink-200/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-500/10 hover:ring-brand-300 dark:bg-ink-900/70 dark:ring-ink-800 dark:hover:ring-brand-500/40"
@@ -107,179 +97,6 @@ function StatsBanner() {
   );
 }
 
-function FloatingAiSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Close on Escape key
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setIsOpen(false);
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  function scrollToSection(id: string) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      setIsOpen(false);
-    }
-  }
-
-  const aiShortcuts = [
-    {
-      name: "AI Summarizer",
-      href: "/ai-summarizer",
-      desc: "Instant breakdown & key takeaways",
-      icon: SummarizeIcon,
-      color: "from-blue-500 to-indigo-600",
-    },
-    {
-      name: "AI Document Chat",
-      href: "/ai-chat",
-      desc: "Ask questions & query contents",
-      icon: ChatIcon,
-      color: "from-purple-500 to-pink-600",
-    },
-    {
-      name: "AI Quiz Maker",
-      href: "/ai-quiz",
-      desc: "Generate MCQs & test questions",
-      icon: QuizIcon,
-      color: "from-amber-500 to-orange-600",
-    },
-    {
-      name: "AI Study Notes",
-      href: "/ai-notes",
-      desc: "Turn docs into revision outlines",
-      icon: NotesIcon,
-      color: "from-emerald-500 to-teal-600",
-    },
-  ];
-
-  return (
-    <>
-      {/* Floating Trigger Button on the right edge */}
-      <div className="fixed right-4 bottom-6 sm:bottom-8 z-40 flex flex-col items-end">
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-label="Toggle AI Tools Drawer"
-          className="group relative flex items-center justify-center rounded-full bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 px-5 py-2.5 sm:px-6 sm:py-3 text-white shadow-xl shadow-brand-600/30 ring-1 ring-white/25 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 hover:from-brand-500 hover:to-purple-500 active:scale-95"
-        >
-          <span className="text-sm sm:text-[15px] font-bold tracking-wide">
-            AI Tools
-          </span>
-        </button>
-      </div>
-
-      {/* Backdrop overlay */}
-      {isOpen && (
-        <div
-          role="button"
-          tabIndex={0}
-          aria-label="Close AI Tools Menu"
-          onClick={() => setIsOpen(false)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") setIsOpen(false);
-          }}
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity"
-        />
-      )}
-
-      {/* AI Quick Drawer panel */}
-      <aside
-        className={`fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-white/95 dark:bg-[#0d0d1a]/95 backdrop-blur-xl ring-1 ring-ink-200 dark:ring-ink-800 shadow-2xl transition-transform duration-300 ease-out p-6 overflow-y-auto flex flex-col ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-        aria-label="AI Tools Quick Panel"
-      >
-        {/* Drawer Header */}
-        <div className="flex items-center justify-between pb-5 border-b border-ink-100 dark:border-ink-800">
-          <div>
-            <h3 className="font-extrabold text-lg text-ink-900 dark:text-white tracking-tight">
-              AI Tools
-            </h3>
-            <p className="text-xs text-ink-500 dark:text-ink-400 mt-0.5">
-              Next-gen document intelligence
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            aria-label="Close panel"
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-300 hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors text-sm font-semibold"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Scroll action to AI section */}
-        <div className="mt-5 rounded-2xl bg-brand-50/70 p-3.5 ring-1 ring-brand-200/50 dark:bg-brand-900/20 dark:ring-brand-700/30">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">
-              ⚡ Explore all on page
-            </span>
-            <button
-              type="button"
-              onClick={() => scrollToSection("ai-tools-section")}
-              className="text-xs font-bold text-brand-600 hover:underline dark:text-brand-400"
-            >
-              Jump to Section ↓
-            </button>
-          </div>
-        </div>
-
-        {/* AI Tools Links List */}
-        <div className="mt-6 flex-1 space-y-3">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-ink-400 dark:text-ink-500">
-            Select an AI Tool
-          </p>
-          {aiShortcuts.map((tool) => (
-            <Link
-              key={tool.href}
-              to={tool.href}
-              onClick={() => setIsOpen(false)}
-              className="group flex items-start gap-3.5 rounded-2xl p-3.5 ring-1 ring-ink-200/70 hover:ring-brand-400 dark:ring-ink-800 dark:hover:ring-brand-500 transition-all duration-200 hover:bg-ink-50 dark:hover:bg-ink-900/50 hover:shadow-md"
-            >
-              <span
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tool.color} text-white shadow-sm`}
-              >
-                <tool.icon className="h-5 w-5" />
-              </span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-semibold text-ink-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                    {tool.name}
-                  </h4>
-                  <span className="text-xs text-ink-400 group-hover:translate-x-0.5 transition-transform">
-                    →
-                  </span>
-                </div>
-                <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400 truncate">
-                  {tool.desc}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Live Demo Trigger */}
-        <div className="mt-6 pt-5 border-t border-ink-100 dark:border-ink-800">
-          <button
-            type="button"
-            onClick={() => scrollToSection("ai-live-demo")}
-            className="w-full rounded-xl bg-gradient-to-r from-brand-600 to-purple-600 py-3 text-center text-xs font-bold text-white shadow-lg shadow-brand-600/20 hover:from-brand-500 hover:to-purple-500 transition-all"
-          >
-            Try Free AI Interactive Demo 🚀
-          </button>
-        </div>
-      </aside>
-    </>
-  );
-}
-
 function Home() {
   return (
     <>
@@ -293,7 +110,17 @@ function Home() {
         }}
       />
 
-      <FloatingAiSidebar />
+      <Link
+        to="/ai-summarizer"
+        className="ai-corner-button"
+        aria-label="Open AI Summarizer"
+      >
+        <span className="ai-corner-wordmark">AI Tool</span>
+        <span className="ai-corner-sparkles" aria-hidden="true">
+          <SparkIcon className="ai-corner-sparkle ai-corner-sparkle-small" />
+          <SparkIcon className="ai-corner-sparkle ai-corner-sparkle-large" />
+        </span>
+      </Link>
 
       <Hero />
 
@@ -334,11 +161,57 @@ function Home() {
                 All PDF tools
               </span>
               <span className="mt-1 text-sm text-ink-600 dark:text-ink-400">
-                Rotate, delete pages, extract pages and more.
+                Sign, watermark, rotate, delete pages and more.
               </span>
             </Link>
           </li>
         </ul>
+      </section>
+
+      <section aria-labelledby="current-tools-heading" className={`${sectionWrap} mt-20 animate-fade-in-up`}>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 id="current-tools-heading" className={heading.h2}>
+              Current tools
+            </h2>
+            <p className={`mt-2 ${muted}`}>
+              A quick list of the tools currently available on the site.
+            </p>
+          </div>
+          <Link
+            to="/tools"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 dark:text-brand-300"
+          >
+            Open full tool list <ArrowRightIcon className="h-4 w-4" />
+          </Link>
+        </div>
+
+        <div className="mt-6 overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-sm dark:border-ink-800 dark:bg-ink-900/40">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm text-ink-700 dark:text-ink-300">
+              <thead className="bg-ink-50 text-xs uppercase tracking-[0.08em] text-ink-500 dark:bg-ink-950 dark:text-ink-400">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Tool</th>
+                  <th className="px-4 py-3 font-semibold">Category</th>
+                  <th className="px-4 py-3 font-semibold">Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                {TOOLS.map((tool) => (
+                  <tr key={tool.href} className="border-t border-ink-200 dark:border-ink-800">
+                    <td className="px-4 py-3">
+                      <Link to={tool.href} className="font-semibold text-brand-700 hover:text-brand-600 dark:text-brand-300 dark:hover:text-brand-200">
+                        {tool.name}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-ink-600 dark:text-ink-400">{tool.category}</td>
+                    <td className="px-4 py-3 text-ink-600 dark:text-ink-400">{tool.blurb}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       {/* AI Tools */}
@@ -380,8 +253,6 @@ function Home() {
 
       <HowItWorks />
 
-      <AdSlotRow />
-
       <WhyUs />
 
       <Privacy />
@@ -397,27 +268,18 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-ink-200/70 bg-gradient-to-br from-white via-brand-50/30 to-purple-50/20 dark:border-ink-800 dark:from-[#0a0a14] dark:via-[#0d0d1a] dark:to-[#0a0f1a]">
-      {/* ── Animated background orbs ── */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-brand-500/[0.07] blur-[100px] animate-float" />
-        <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-purple-500/[0.06] blur-[80px] animate-float" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/3 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-cyan-400/[0.04] blur-[90px] animate-float" style={{ animationDelay: "2s" }} />
-        {/* subtle grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04]" style={{ backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-      </div>
-
+    <section className="relative overflow-hidden border-b border-ink-200/70 bg-gradient-to-br from-white via-ink-50 to-brand-50/40 dark:border-[#172554] dark:bg-gradient-to-br dark:from-[#000000] dark:via-[#020617] dark:to-[#13264a]">
       <div className={`${sectionWrap} relative py-20 sm:py-24 lg:py-28 xl:py-32`}>
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16">
           {/* ── Left — Text content ── */}
-          <div className="animate-slide-in-left">
+          <div className="max-w-2xl animate-slide-in-left">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-brand-50/90 px-4 py-2 text-xs font-semibold text-brand-700 ring-1 ring-brand-200/60 backdrop-blur-sm dark:bg-brand-900/30 dark:text-brand-300 dark:ring-brand-700/40">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-500" />
               </span>
-              100% Browser-Based — No Upload
+              Private by default — files stay on your device
             </div>
 
             <h1 className="mt-8 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl xl:text-[4rem]">
@@ -429,37 +291,39 @@ function Hero() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg/relaxed text-ink-600 sm:text-xl/relaxed dark:text-ink-400">
-              Compress, merge, split, convert and manage your PDF files in seconds.
-              No complicated software. No sign-up. Just drag, drop, done.
+              Compress, merge, split, convert and manage PDFs in seconds. No
+              complicated software, sign-up or watermark. Just drag, drop and done.
             </p>
 
             {/* CTA buttons */}
-            <div className="mt-10 flex flex-wrap gap-3">
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/tools"
                 className="btn-press group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:shadow-xl hover:shadow-brand-600/30 hover:from-brand-500 hover:to-brand-600 dark:from-brand-500 dark:to-brand-600 dark:shadow-brand-600/20"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
-                ✨ Explore PDF Tools
+                Explore PDF Tools
+                <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 to="/compress-pdf"
                 className="btn-press inline-flex items-center gap-2 rounded-xl bg-white/80 px-7 py-3.5 text-sm font-semibold text-ink-700 ring-1 ring-ink-200 backdrop-blur-sm transition-all hover:bg-white hover:ring-ink-300 hover:shadow-md dark:bg-ink-800/60 dark:text-ink-200 dark:ring-ink-700 dark:hover:bg-ink-800 dark:hover:ring-ink-600"
               >
-                📄 Compress a PDF
+                <BoltIcon className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+                Compress a PDF
               </Link>
             </div>
 
             {/* Trust badges */}
-            <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-ink-600 dark:text-ink-400">
+            <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-600 dark:text-ink-400">
               {[
-                { icon: "🔒", text: "No account needed" },
-                { icon: "🚫", text: "No watermarks" },
-                { icon: "📱", text: "Works on mobile" },
+                { icon: LockIcon, text: "No account needed" },
+                { icon: CheckIcon, text: "No watermarks" },
+                { icon: BoltIcon, text: "Works on mobile" },
               ].map((item) => (
                 <li key={item.text} className="flex items-center gap-2.5">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-50 text-sm dark:bg-emerald-900/20">
-                    {item.icon}
+                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+                    <item.icon className="h-3.5 w-3.5" />
                   </span>
                   <span className="font-medium">{item.text}</span>
                 </li>
@@ -543,12 +407,14 @@ function Hero() {
                           </p>
                         </div>
                         {/* Quick tools row */}
-                        <div className="mt-3 flex gap-1.5 sm:mt-4 sm:gap-2">
+                        <div className="mt-3 grid grid-cols-3 gap-1.5 sm:mt-4 sm:grid-cols-6 sm:gap-2">
                           {[
                             { label: "Compress", gradient: "from-teal-400 to-teal-500", shadow: "shadow-teal-500/20" },
                             { label: "Merge", gradient: "from-purple-400 to-purple-500", shadow: "shadow-purple-500/20" },
                             { label: "Split", gradient: "from-blue-400 to-blue-500", shadow: "shadow-blue-500/20" },
                             { label: "Convert", gradient: "from-orange-400 to-orange-500", shadow: "shadow-orange-500/20" },
+                            { label: "Rotate", gradient: "from-pink-400 to-rose-500", shadow: "shadow-rose-500/20" },
+                            { label: "Delete", gradient: "from-slate-400 to-slate-500", shadow: "shadow-slate-500/20" },
                           ].map((tool) => (
                             <div
                               key={tool.label}
@@ -675,20 +541,44 @@ const DEMO_PROMPTS = [
   { label: "🔑 Key points", prompt: "List the top 5 most useful free PDF tools everyone should know about." },
 ];
 
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result)));
+    reader.addEventListener("error", () => reject(new Error("The image could not be read.")));
+    reader.readAsDataURL(file);
+  });
+}
+
 function AiDemo() {
   const [messages, setMessages] = useState<Array<{ role: "user" | "ai"; text: string }>>([]);
   const [input, setInput] = useState("");
+  const [attachment, setAttachment] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSend(prompt?: string) {
     const q = prompt || input.trim();
-    if (!q || loading) return;
+    if ((!q && !attachment) || loading) return;
     setInput("");
-    setMessages((prev) => [...prev, { role: "user", text: q }]);
+    const file = attachment;
+    const question = q || "Analyze this uploaded file and summarize the most important information.";
+    setAttachment(null);
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: file ? `${question} (${file.name})` : question },
+    ]);
     setLoading(true);
     try {
+      let context = "";
+      let image: AiAttachment | undefined;
+      if (file?.type === "application/pdf") {
+        context = `\n\nUploaded PDF content:\n${(await extractPdfText(file)).slice(0, 28000)}`;
+      } else if (file?.type.startsWith("image/")) {
+        image = { mimeType: file.type, data: (await readFileAsDataUrl(file)).split(",")[1] ?? "" };
+      }
       const reply = await callGemini(
-        `You are a friendly AI assistant for PDF Quick Tools (a free browser-based PDF utility). Keep answers short (2-4 sentences max), helpful, and casual. User asked: ${q}`,
+        `You are a friendly AI assistant for PDF Quick Tools (a free browser-based PDF utility). Keep answers short (2-4 sentences max), helpful, and casual. User asked: ${question}${context}`,
+        image,
       );
       setMessages((prev) => [...prev, { role: "ai", text: reply }]);
     } catch {
@@ -699,6 +589,16 @@ function AiDemo() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function chooseAttachment(file: File | undefined) {
+    if (!file) return;
+    if (!(file.type === "application/pdf" || file.type.startsWith("image/"))) return;
+    if (file.size > 7 * 1024 * 1024) {
+      setMessages((prev) => [...prev, { role: "ai", text: "Please choose a PDF or image smaller than 7 MB." }]);
+      return;
+    }
+    setAttachment(file);
   }
 
   return (
@@ -719,7 +619,7 @@ function AiDemo() {
                 Try AI Live — No Upload Needed
               </h2>
               <p className="text-xs text-ink-400 sm:text-sm">
-                Ask anything about PDFs, file formats, or our tools
+                Ask anything about PDFs, file formats, or our tools. You can also attach a PDF or image.
               </p>
             </div>
           </div>
@@ -791,15 +691,28 @@ function AiDemo() {
               e.preventDefault();
               handleSend();
             }}
-            className="mt-4 flex gap-2"
+            className="mt-4 flex flex-wrap gap-2"
           >
+            <label className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-white/[0.06] px-4 py-3 text-sm font-semibold text-ink-300 ring-1 ring-white/[0.08] transition hover:bg-white/[0.1] hover:text-white">
+              Attach file
+              <input
+                type="file"
+                accept="application/pdf,image/*"
+                className="sr-only"
+                disabled={loading}
+                onChange={(event) => {
+                  void chooseAttachment(event.target.files?.[0]);
+                  event.currentTarget.value = "";
+                }}
+              />
+            </label>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask anything about PDFs..."
               disabled={loading}
-              className="flex-1 rounded-xl bg-white/[0.06] px-4 py-3 text-sm text-white placeholder-ink-500 ring-1 ring-white/[0.08] outline-none transition-all focus:ring-brand-500/50 focus:ring-2 disabled:opacity-50"
+              className="min-w-[12rem] flex-1 rounded-xl bg-white/[0.06] px-4 py-3 text-sm text-white placeholder-ink-500 ring-1 ring-white/[0.08] outline-none transition-all focus:ring-brand-500/50 focus:ring-2 disabled:opacity-50"
             />
             <button
               type="submit"
@@ -809,6 +722,12 @@ function AiDemo() {
               {loading ? "..." : "Send"}
             </button>
           </form>
+          {attachment && (
+            <div className="mt-2 flex items-center justify-between gap-3 rounded-xl bg-brand-500/10 px-3 py-2 text-xs text-brand-200 ring-1 ring-brand-400/20">
+              <span className="truncate">Attached: {attachment.name}</span>
+              <button type="button" onClick={() => setAttachment(null)} className="shrink-0 font-semibold text-brand-300 hover:text-white">Remove</button>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -855,7 +774,7 @@ function HowItWorks() {
       </div>
 
       <ol className="mt-12 grid gap-6 sm:grid-cols-3 stagger-slide relative">
-        {STEPS.map((step, idx) => (
+        {STEPS.map((step) => (
           <li
             key={step.number}
             className="group relative rounded-3xl bg-white p-8 ring-1 ring-ink-200/80 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/10 hover:ring-brand-300 dark:bg-ink-900 dark:ring-ink-800 dark:hover:ring-brand-500/50"
@@ -864,7 +783,7 @@ function HowItWorks() {
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-2xl group-hover:scale-110 transition-transform duration-300 dark:bg-brand-900/30">
                 {step.icon}
               </span>
-              <span className="text-3xl font-black text-ink-200 group-hover:text-brand-400/60 transition-colors dark:text-ink-800">
+              <span className="text-3xl font-black text-ink-500 transition-colors group-hover:text-brand-600 dark:text-ink-400 dark:group-hover:text-brand-300">
                 {step.number}
               </span>
             </div>
@@ -882,14 +801,6 @@ function HowItWorks() {
         ))}
       </ol>
     </section>
-  );
-}
-
-function AdSlotRow() {
-  return (
-    <div className={sectionWrap}>
-      <AdSlot />
-    </div>
   );
 }
 
@@ -951,7 +862,8 @@ function WhyUs() {
 
 const PRIVACY_POINTS = [
   "Your file is opened and processed by your own browser, on your own device.",
-  "Nothing is uploaded, so there is no copy of your document on any server.",
+  "PDF editing and conversion tools never upload your document to a server.",
+  "For AI tools, only extracted text is sent to the AI service when you choose an AI action; the original PDF stays on your device.",
   "The finished file is held in your browser's memory until you close the tab.",
   "No account, no email address and no tracking of what is inside your files.",
 ];
@@ -1012,7 +924,7 @@ function Privacy() {
 function FinalCta() {
   return (
     <section className={`${sectionWrap} mt-20 animate-fade-in-up`}>
-      <div className="rounded-3xl bg-gradient-to-br from-brand-600 via-brand-500 to-purple-600 px-6 py-12 text-center sm:px-10 sm:py-14 animate-gradient-shift" style={{ backgroundSize: '200% 200%' }}>
+      <div className="rounded-3xl bg-gradient-to-br from-brand-600 via-brand-500 to-purple-600 px-6 py-12 text-center sm:px-10 sm:py-14">
         <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
           Pick a tool and get it done
         </h2>

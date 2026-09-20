@@ -4,9 +4,12 @@ const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent";
 
 async function callGeminiAPI(prompt: string, apiKey: string) {
-  const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+  const response = await fetch(GEMINI_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
@@ -43,11 +46,8 @@ export const askGeminiServerFn = createServerFn({ method: "POST" })
       );
     }
 
-    console.log("[askGemini] Key loaded, length:", apiKey.length);
-
     try {
       const result = await callGeminiAPI(prompt, apiKey);
-      console.log("[askGemini] OK, length:", result.length);
       return result;
     } catch (err) {
       console.error("[askGemini] Failed:", err);

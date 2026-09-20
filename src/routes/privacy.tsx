@@ -65,8 +65,7 @@ function Privacy() {
       <Block title="Cookies and local storage">
         <p>
           We store one small preference in your browser: whether you chose light
-          or dark mode. That is it. There is no advertising cookie set by us and
-          no cross-site tracking profile.
+          or dark mode. No tracking cookies are used for advertising.
         </p>
       </Block>
 
@@ -75,16 +74,6 @@ function Privacy() {
           The tools on this site do not require an account. We do not ask for
           your email address, your phone number, or a password, so there is no
           account record to secure, export, or delete.
-        </p>
-      </Block>
-
-      <Block title="Advertising">
-        <p>
-          The site reserves space for advertising between content sections. If
-          advertising is enabled in future, an advertising partner may set its
-          own cookies under its own policy. Ads will never be placed next to
-          download buttons, styled to look like download buttons, or shown as
-          pop-ups or redirects.
         </p>
       </Block>
 

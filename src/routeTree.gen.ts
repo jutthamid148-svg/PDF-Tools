@@ -10,26 +10,57 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AddPageNumbersRouteImport } from './routes/add-page-numbers'
+import { Route as AiAskPdfRouteImport } from './routes/ai-ask-pdf'
 import { Route as AiChatRouteImport } from './routes/ai-chat'
+import { Route as AiCitationGeneratorRouteImport } from './routes/ai-citation-generator'
+import { Route as AiDocumentAnalyzerRouteImport } from './routes/ai-document-analyzer'
+import { Route as AiFlashcardGeneratorRouteImport } from './routes/ai-flashcard-generator'
+import { Route as AiGrammarCheckerRouteImport } from './routes/ai-grammar-checker'
 import { Route as AiNotesRouteImport } from './routes/ai-notes'
+import { Route as AiPdfQuestionGeneratorRouteImport } from './routes/ai-pdf-question-generator'
+import { Route as AiPdfRewriterRouteImport } from './routes/ai-pdf-rewriter'
+import { Route as AiPdfToPresentationRouteImport } from './routes/ai-pdf-to-presentation'
+import { Route as AiPdfTranslatorRouteImport } from './routes/ai-pdf-translator'
 import { Route as AiQuizRouteImport } from './routes/ai-quiz'
+import { Route as AiResumeAnalyzerRouteImport } from './routes/ai-resume-analyzer'
 import { Route as AiSummarizerRouteImport } from './routes/ai-summarizer'
 import { Route as CompressPdfRouteImport } from './routes/compress-pdf'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DeletePdfPagesRouteImport } from './routes/delete-pdf-pages'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ExtractPdfPagesRouteImport } from './routes/extract-pdf-pages'
 import { Route as JpgToPdfRouteImport } from './routes/jpg-to-pdf'
 import { Route as MergePdfRouteImport } from './routes/merge-pdf'
 import { Route as PdfToJpgRouteImport } from './routes/pdf-to-jpg'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RearrangePdfPagesRouteImport } from './routes/rearrange-pdf-pages'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
+import { Route as SignPdfRouteImport } from './routes/sign-pdf'
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as WatermarkPdfRouteImport } from './routes/watermark-pdf'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AddPageNumbersRoute = AddPageNumbersRouteImport.update({
+  id: '/add-page-numbers',
+  path: '/add-page-numbers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiAskPdfRoute = AiAskPdfRouteImport.update({
+  id: '/ai-ask-pdf',
+  path: '/ai-ask-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiChatRoute = AiChatRouteImport.update({
@@ -37,14 +68,59 @@ const AiChatRoute = AiChatRouteImport.update({
   path: '/ai-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiCitationGeneratorRoute = AiCitationGeneratorRouteImport.update({
+  id: '/ai-citation-generator',
+  path: '/ai-citation-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiDocumentAnalyzerRoute = AiDocumentAnalyzerRouteImport.update({
+  id: '/ai-document-analyzer',
+  path: '/ai-document-analyzer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiFlashcardGeneratorRoute = AiFlashcardGeneratorRouteImport.update({
+  id: '/ai-flashcard-generator',
+  path: '/ai-flashcard-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiGrammarCheckerRoute = AiGrammarCheckerRouteImport.update({
+  id: '/ai-grammar-checker',
+  path: '/ai-grammar-checker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiNotesRoute = AiNotesRouteImport.update({
   id: '/ai-notes',
   path: '/ai-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiPdfQuestionGeneratorRoute = AiPdfQuestionGeneratorRouteImport.update({
+  id: '/ai-pdf-question-generator',
+  path: '/ai-pdf-question-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiPdfRewriterRoute = AiPdfRewriterRouteImport.update({
+  id: '/ai-pdf-rewriter',
+  path: '/ai-pdf-rewriter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiPdfToPresentationRoute = AiPdfToPresentationRouteImport.update({
+  id: '/ai-pdf-to-presentation',
+  path: '/ai-pdf-to-presentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiPdfTranslatorRoute = AiPdfTranslatorRouteImport.update({
+  id: '/ai-pdf-translator',
+  path: '/ai-pdf-translator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiQuizRoute = AiQuizRouteImport.update({
   id: '/ai-quiz',
   path: '/ai-quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiResumeAnalyzerRoute = AiResumeAnalyzerRouteImport.update({
+  id: '/ai-resume-analyzer',
+  path: '/ai-resume-analyzer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiSummarizerRoute = AiSummarizerRouteImport.update({
@@ -65,6 +141,11 @@ const ContactRoute = ContactRouteImport.update({
 const DeletePdfPagesRoute = DeletePdfPagesRouteImport.update({
   id: '/delete-pdf-pages',
   path: '/delete-pdf-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtractPdfPagesRoute = ExtractPdfPagesRouteImport.update({
@@ -92,9 +173,19 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RearrangePdfPagesRoute = RearrangePdfPagesRouteImport.update({
+  id: '/rearrange-pdf-pages',
+  path: '/rearrange-pdf-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RotatePdfRoute = RotatePdfRouteImport.update({
   id: '/rotate-pdf',
   path: '/rotate-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignPdfRoute = SignPdfRouteImport.update({
+  id: '/sign-pdf',
+  path: '/sign-pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SplitPdfRoute = SplitPdfRouteImport.update({
@@ -112,143 +203,260 @@ const ToolsRoute = ToolsRouteImport.update({
   path: '/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WatermarkPdfRoute = WatermarkPdfRouteImport.update({
+  id: '/watermark-pdf',
+  path: '/watermark-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/add-page-numbers': typeof AddPageNumbersRoute
+  '/ai-ask-pdf': typeof AiAskPdfRoute
   '/ai-chat': typeof AiChatRoute
+  '/ai-citation-generator': typeof AiCitationGeneratorRoute
+  '/ai-document-analyzer': typeof AiDocumentAnalyzerRoute
+  '/ai-flashcard-generator': typeof AiFlashcardGeneratorRoute
+  '/ai-grammar-checker': typeof AiGrammarCheckerRoute
   '/ai-notes': typeof AiNotesRoute
+  '/ai-pdf-question-generator': typeof AiPdfQuestionGeneratorRoute
+  '/ai-pdf-rewriter': typeof AiPdfRewriterRoute
+  '/ai-pdf-to-presentation': typeof AiPdfToPresentationRoute
+  '/ai-pdf-translator': typeof AiPdfTranslatorRoute
   '/ai-quiz': typeof AiQuizRoute
+  '/ai-resume-analyzer': typeof AiResumeAnalyzerRoute
   '/ai-summarizer': typeof AiSummarizerRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/contact': typeof ContactRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/pdf-to-jpg': typeof PdfToJpgRoute
   '/privacy': typeof PrivacyRoute
+  '/rearrange-pdf-pages': typeof RearrangePdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
+  '/sign-pdf': typeof SignPdfRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
+  '/watermark-pdf': typeof WatermarkPdfRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/add-page-numbers': typeof AddPageNumbersRoute
+  '/ai-ask-pdf': typeof AiAskPdfRoute
   '/ai-chat': typeof AiChatRoute
+  '/ai-citation-generator': typeof AiCitationGeneratorRoute
+  '/ai-document-analyzer': typeof AiDocumentAnalyzerRoute
+  '/ai-flashcard-generator': typeof AiFlashcardGeneratorRoute
+  '/ai-grammar-checker': typeof AiGrammarCheckerRoute
   '/ai-notes': typeof AiNotesRoute
+  '/ai-pdf-question-generator': typeof AiPdfQuestionGeneratorRoute
+  '/ai-pdf-rewriter': typeof AiPdfRewriterRoute
+  '/ai-pdf-to-presentation': typeof AiPdfToPresentationRoute
+  '/ai-pdf-translator': typeof AiPdfTranslatorRoute
   '/ai-quiz': typeof AiQuizRoute
+  '/ai-resume-analyzer': typeof AiResumeAnalyzerRoute
   '/ai-summarizer': typeof AiSummarizerRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/contact': typeof ContactRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/pdf-to-jpg': typeof PdfToJpgRoute
   '/privacy': typeof PrivacyRoute
+  '/rearrange-pdf-pages': typeof RearrangePdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
+  '/sign-pdf': typeof SignPdfRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
+  '/watermark-pdf': typeof WatermarkPdfRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/add-page-numbers': typeof AddPageNumbersRoute
+  '/ai-ask-pdf': typeof AiAskPdfRoute
   '/ai-chat': typeof AiChatRoute
+  '/ai-citation-generator': typeof AiCitationGeneratorRoute
+  '/ai-document-analyzer': typeof AiDocumentAnalyzerRoute
+  '/ai-flashcard-generator': typeof AiFlashcardGeneratorRoute
+  '/ai-grammar-checker': typeof AiGrammarCheckerRoute
   '/ai-notes': typeof AiNotesRoute
+  '/ai-pdf-question-generator': typeof AiPdfQuestionGeneratorRoute
+  '/ai-pdf-rewriter': typeof AiPdfRewriterRoute
+  '/ai-pdf-to-presentation': typeof AiPdfToPresentationRoute
+  '/ai-pdf-translator': typeof AiPdfTranslatorRoute
   '/ai-quiz': typeof AiQuizRoute
+  '/ai-resume-analyzer': typeof AiResumeAnalyzerRoute
   '/ai-summarizer': typeof AiSummarizerRoute
   '/compress-pdf': typeof CompressPdfRoute
   '/contact': typeof ContactRoute
   '/delete-pdf-pages': typeof DeletePdfPagesRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/extract-pdf-pages': typeof ExtractPdfPagesRoute
   '/jpg-to-pdf': typeof JpgToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/pdf-to-jpg': typeof PdfToJpgRoute
   '/privacy': typeof PrivacyRoute
+  '/rearrange-pdf-pages': typeof RearrangePdfPagesRoute
   '/rotate-pdf': typeof RotatePdfRoute
+  '/sign-pdf': typeof SignPdfRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/tools': typeof ToolsRoute
+  '/watermark-pdf': typeof WatermarkPdfRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/add-page-numbers'
+    | '/ai-ask-pdf'
     | '/ai-chat'
+    | '/ai-citation-generator'
+    | '/ai-document-analyzer'
+    | '/ai-flashcard-generator'
+    | '/ai-grammar-checker'
     | '/ai-notes'
+    | '/ai-pdf-question-generator'
+    | '/ai-pdf-rewriter'
+    | '/ai-pdf-to-presentation'
+    | '/ai-pdf-translator'
     | '/ai-quiz'
+    | '/ai-resume-analyzer'
     | '/ai-summarizer'
     | '/compress-pdf'
     | '/contact'
     | '/delete-pdf-pages'
+    | '/disclaimer'
     | '/extract-pdf-pages'
     | '/jpg-to-pdf'
     | '/merge-pdf'
     | '/pdf-to-jpg'
     | '/privacy'
+    | '/rearrange-pdf-pages'
     | '/rotate-pdf'
+    | '/sign-pdf'
     | '/split-pdf'
     | '/terms'
     | '/tools'
+    | '/watermark-pdf'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/add-page-numbers'
+    | '/ai-ask-pdf'
     | '/ai-chat'
+    | '/ai-citation-generator'
+    | '/ai-document-analyzer'
+    | '/ai-flashcard-generator'
+    | '/ai-grammar-checker'
     | '/ai-notes'
+    | '/ai-pdf-question-generator'
+    | '/ai-pdf-rewriter'
+    | '/ai-pdf-to-presentation'
+    | '/ai-pdf-translator'
     | '/ai-quiz'
+    | '/ai-resume-analyzer'
     | '/ai-summarizer'
     | '/compress-pdf'
     | '/contact'
     | '/delete-pdf-pages'
+    | '/disclaimer'
     | '/extract-pdf-pages'
     | '/jpg-to-pdf'
     | '/merge-pdf'
     | '/pdf-to-jpg'
     | '/privacy'
+    | '/rearrange-pdf-pages'
     | '/rotate-pdf'
+    | '/sign-pdf'
     | '/split-pdf'
     | '/terms'
     | '/tools'
+    | '/watermark-pdf'
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/add-page-numbers'
+    | '/ai-ask-pdf'
     | '/ai-chat'
+    | '/ai-citation-generator'
+    | '/ai-document-analyzer'
+    | '/ai-flashcard-generator'
+    | '/ai-grammar-checker'
     | '/ai-notes'
+    | '/ai-pdf-question-generator'
+    | '/ai-pdf-rewriter'
+    | '/ai-pdf-to-presentation'
+    | '/ai-pdf-translator'
     | '/ai-quiz'
+    | '/ai-resume-analyzer'
     | '/ai-summarizer'
     | '/compress-pdf'
     | '/contact'
     | '/delete-pdf-pages'
+    | '/disclaimer'
     | '/extract-pdf-pages'
     | '/jpg-to-pdf'
     | '/merge-pdf'
     | '/pdf-to-jpg'
     | '/privacy'
+    | '/rearrange-pdf-pages'
     | '/rotate-pdf'
+    | '/sign-pdf'
     | '/split-pdf'
     | '/terms'
     | '/tools'
+    | '/watermark-pdf'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AddPageNumbersRoute: typeof AddPageNumbersRoute
+  AiAskPdfRoute: typeof AiAskPdfRoute
   AiChatRoute: typeof AiChatRoute
+  AiCitationGeneratorRoute: typeof AiCitationGeneratorRoute
+  AiDocumentAnalyzerRoute: typeof AiDocumentAnalyzerRoute
+  AiFlashcardGeneratorRoute: typeof AiFlashcardGeneratorRoute
+  AiGrammarCheckerRoute: typeof AiGrammarCheckerRoute
   AiNotesRoute: typeof AiNotesRoute
+  AiPdfQuestionGeneratorRoute: typeof AiPdfQuestionGeneratorRoute
+  AiPdfRewriterRoute: typeof AiPdfRewriterRoute
+  AiPdfToPresentationRoute: typeof AiPdfToPresentationRoute
+  AiPdfTranslatorRoute: typeof AiPdfTranslatorRoute
   AiQuizRoute: typeof AiQuizRoute
+  AiResumeAnalyzerRoute: typeof AiResumeAnalyzerRoute
   AiSummarizerRoute: typeof AiSummarizerRoute
   CompressPdfRoute: typeof CompressPdfRoute
   ContactRoute: typeof ContactRoute
   DeletePdfPagesRoute: typeof DeletePdfPagesRoute
+  DisclaimerRoute: typeof DisclaimerRoute
   ExtractPdfPagesRoute: typeof ExtractPdfPagesRoute
   JpgToPdfRoute: typeof JpgToPdfRoute
   MergePdfRoute: typeof MergePdfRoute
   PdfToJpgRoute: typeof PdfToJpgRoute
   PrivacyRoute: typeof PrivacyRoute
+  RearrangePdfPagesRoute: typeof RearrangePdfPagesRoute
   RotatePdfRoute: typeof RotatePdfRoute
+  SignPdfRoute: typeof SignPdfRoute
   SplitPdfRoute: typeof SplitPdfRoute
   TermsRoute: typeof TermsRoute
   ToolsRoute: typeof ToolsRoute
+  WatermarkPdfRoute: typeof WatermarkPdfRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,11 +468,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/add-page-numbers': {
+      id: '/add-page-numbers'
+      path: '/add-page-numbers'
+      fullPath: '/add-page-numbers'
+      preLoaderRoute: typeof AddPageNumbersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-ask-pdf': {
+      id: '/ai-ask-pdf'
+      path: '/ai-ask-pdf'
+      fullPath: '/ai-ask-pdf'
+      preLoaderRoute: typeof AiAskPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-chat': {
       id: '/ai-chat'
       path: '/ai-chat'
       fullPath: '/ai-chat'
       preLoaderRoute: typeof AiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-citation-generator': {
+      id: '/ai-citation-generator'
+      path: '/ai-citation-generator'
+      fullPath: '/ai-citation-generator'
+      preLoaderRoute: typeof AiCitationGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-document-analyzer': {
+      id: '/ai-document-analyzer'
+      path: '/ai-document-analyzer'
+      fullPath: '/ai-document-analyzer'
+      preLoaderRoute: typeof AiDocumentAnalyzerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-flashcard-generator': {
+      id: '/ai-flashcard-generator'
+      path: '/ai-flashcard-generator'
+      fullPath: '/ai-flashcard-generator'
+      preLoaderRoute: typeof AiFlashcardGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-grammar-checker': {
+      id: '/ai-grammar-checker'
+      path: '/ai-grammar-checker'
+      fullPath: '/ai-grammar-checker'
+      preLoaderRoute: typeof AiGrammarCheckerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-notes': {
@@ -274,11 +531,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ai-pdf-question-generator': {
+      id: '/ai-pdf-question-generator'
+      path: '/ai-pdf-question-generator'
+      fullPath: '/ai-pdf-question-generator'
+      preLoaderRoute: typeof AiPdfQuestionGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-pdf-rewriter': {
+      id: '/ai-pdf-rewriter'
+      path: '/ai-pdf-rewriter'
+      fullPath: '/ai-pdf-rewriter'
+      preLoaderRoute: typeof AiPdfRewriterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-pdf-to-presentation': {
+      id: '/ai-pdf-to-presentation'
+      path: '/ai-pdf-to-presentation'
+      fullPath: '/ai-pdf-to-presentation'
+      preLoaderRoute: typeof AiPdfToPresentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-pdf-translator': {
+      id: '/ai-pdf-translator'
+      path: '/ai-pdf-translator'
+      fullPath: '/ai-pdf-translator'
+      preLoaderRoute: typeof AiPdfTranslatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-quiz': {
       id: '/ai-quiz'
       path: '/ai-quiz'
       fullPath: '/ai-quiz'
       preLoaderRoute: typeof AiQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-resume-analyzer': {
+      id: '/ai-resume-analyzer'
+      path: '/ai-resume-analyzer'
+      fullPath: '/ai-resume-analyzer'
+      preLoaderRoute: typeof AiResumeAnalyzerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-summarizer': {
@@ -307,6 +599,13 @@ declare module '@tanstack/react-router' {
       path: '/delete-pdf-pages'
       fullPath: '/delete-pdf-pages'
       preLoaderRoute: typeof DeletePdfPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extract-pdf-pages': {
@@ -344,11 +643,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rearrange-pdf-pages': {
+      id: '/rearrange-pdf-pages'
+      path: '/rearrange-pdf-pages'
+      fullPath: '/rearrange-pdf-pages'
+      preLoaderRoute: typeof RearrangePdfPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rotate-pdf': {
       id: '/rotate-pdf'
       path: '/rotate-pdf'
       fullPath: '/rotate-pdf'
       preLoaderRoute: typeof RotatePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-pdf': {
+      id: '/sign-pdf'
+      path: '/sign-pdf'
+      fullPath: '/sign-pdf'
+      preLoaderRoute: typeof SignPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/split-pdf': {
@@ -372,27 +685,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/watermark-pdf': {
+      id: '/watermark-pdf'
+      path: '/watermark-pdf'
+      fullPath: '/watermark-pdf'
+      preLoaderRoute: typeof WatermarkPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AddPageNumbersRoute: AddPageNumbersRoute,
+  AiAskPdfRoute: AiAskPdfRoute,
   AiChatRoute: AiChatRoute,
+  AiCitationGeneratorRoute: AiCitationGeneratorRoute,
+  AiDocumentAnalyzerRoute: AiDocumentAnalyzerRoute,
+  AiFlashcardGeneratorRoute: AiFlashcardGeneratorRoute,
+  AiGrammarCheckerRoute: AiGrammarCheckerRoute,
   AiNotesRoute: AiNotesRoute,
+  AiPdfQuestionGeneratorRoute: AiPdfQuestionGeneratorRoute,
+  AiPdfRewriterRoute: AiPdfRewriterRoute,
+  AiPdfToPresentationRoute: AiPdfToPresentationRoute,
+  AiPdfTranslatorRoute: AiPdfTranslatorRoute,
   AiQuizRoute: AiQuizRoute,
+  AiResumeAnalyzerRoute: AiResumeAnalyzerRoute,
   AiSummarizerRoute: AiSummarizerRoute,
   CompressPdfRoute: CompressPdfRoute,
   ContactRoute: ContactRoute,
   DeletePdfPagesRoute: DeletePdfPagesRoute,
+  DisclaimerRoute: DisclaimerRoute,
   ExtractPdfPagesRoute: ExtractPdfPagesRoute,
   JpgToPdfRoute: JpgToPdfRoute,
   MergePdfRoute: MergePdfRoute,
   PdfToJpgRoute: PdfToJpgRoute,
   PrivacyRoute: PrivacyRoute,
+  RearrangePdfPagesRoute: RearrangePdfPagesRoute,
   RotatePdfRoute: RotatePdfRoute,
+  SignPdfRoute: SignPdfRoute,
   SplitPdfRoute: SplitPdfRoute,
   TermsRoute: TermsRoute,
   ToolsRoute: ToolsRoute,
+  WatermarkPdfRoute: WatermarkPdfRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

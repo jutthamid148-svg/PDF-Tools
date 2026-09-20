@@ -37,12 +37,36 @@ export function truncateForTokens(text: string, maxTokens: number): string {
 }
 
 /**
- * Call Gemini API via server function.
+ * Call Gemini through the same-origin Vercel Function. The browser never sees
+ * the API credential; it only sends the prompt assembled for the chosen tool.
  */
-export async function callGemini(prompt: string): Promise<string> {
-  const { askGeminiServerFn } = await import("#/server/askGemini");
-  const result = await askGeminiServerFn({ data: prompt });
-  return result;
+export interface AiAttachment {
+  mimeType: string;
+  data: string;
+}
+
+export async function callGemini(
+  prompt: string,
+  attachment?: AiAttachment,
+): Promise<string> {
+  const response = await fetch("/api/ask-gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, attachment }),
+  });
+  const payload = (await response.json().catch(() => null)) as {
+    text?: unknown;
+    error?: unknown;
+  } | null;
+
+  if (!response.ok || typeof payload?.text !== "string") {
+    throw new Error(
+      typeof payload?.error === "string"
+        ? payload.error
+        : "The AI service is unavailable. Please try again.",
+    );
+  }
+  return payload.text;
 }
 
 /**
@@ -52,8 +76,7 @@ export async function callGeminiStream(
   prompt: string,
   onChunk: (text: string) => void,
 ): Promise<string> {
-  const { askGeminiServerFn } = await import("#/server/askGemini");
-  const result = await askGeminiServerFn({ data: prompt });
+  const result = await callGemini(prompt);
   onChunk(result);
   return result;
 }
@@ -107,6 +130,7 @@ Based on the content, suggest 3-5 tools from this list with a brief reason for e
 - Rotate PDF: Fix page orientation
 - Delete Pages: Remove unwanted pages
 - Extract Pages: Keep only specific pages
+- Add Page Numbers: Label selected pages with page numbers
 
 Format as JSON array:
 [
@@ -205,4 +229,63 @@ Format as JSON array:
 ]
 
 The prompt field should be a complete instruction that could be sent to an AI.`;
+}
+
+export type AiDocumentTask =
+  | "translator"
+  | "rewriter"
+  | "presentation"
+  | "flashcards"
+  | "citations"
+  | "grammar"
+  | "analyzer"
+  | "resume"
+  | "questions";
+
+export interface AiDocumentOptions {
+  sourceLanguage?: string;
+  targetLanguage?: string;
+  rewriteMode?: string;
+  cardCount?: number;
+  citationStyle?: string;
+  questionCount?: number;
+  difficulty?: string;
+  questionType?: string;
+  jobDescription?: string;
+}
+
+/** Build strict, document-grounded prompts for the extended AI tool suite. */
+export function documentPrompt(
+  task: AiDocumentTask,
+  text: string,
+  options: AiDocumentOptions = {},
+): string {
+  const content = truncateForTokens(text, 8000);
+  const base = `You are a careful document assistant. Use only the supplied PDF text. Never invent facts, names, dates, citations, statistics or bibliographic fields. If information is missing, write "Not detected in the document". Return valid JSON only, with no Markdown fences.\n\nPDF TEXT:\n${content}\n\n`;
+
+  switch (task) {
+    case "translator":
+      return `${base}Translate the document text from ${options.sourceLanguage ?? "auto-detected language"} to ${options.targetLanguage ?? "English"}. Preserve headings, paragraphs and page markers as much as possible. Return {"sourceLanguage":"...","targetLanguage":"...","translatedText":"..."}.`;
+    case "rewriter":
+      return `${base}Rewrite the document using this mode: ${options.rewriteMode ?? "Improve clarity"}. Preserve the meaning and structure. Return {"mode":"...","rewrittenText":"...","notes":"..."}.`;
+    case "presentation":
+      return `${base}Create a presentation outline from the document. Return {"title":"...","slides":[{"title":"...","content":["..."],"keyPoints":["..."],"speakerNotes":"..."}]}. Use 5-10 slides and omit unsupported claims.`;
+    case "flashcards":
+      return `${base}Generate exactly ${options.cardCount ?? 10} study flashcards. Return {"cards":[{"question":"...","answer":"...","topic":"..."}]}. Every answer must be supported by the document.`;
+    case "citations":
+      return `${base}Create a ${options.citationStyle ?? "APA"} citation from detected document metadata. Return {"style":"...","fullCitation":"...","inTextCitation":"...","detectedFields":{"author":"...","title":"...","date":"...","publisher":"..."},"missingFields":["..."]}. Do not guess missing fields.`;
+    case "grammar":
+      return `${base}Review the text for grammar, spelling, punctuation, clarity, awkward wording and repetition. Return {"summary":{"grammar":0,"spelling":0,"clarity":0},"issues":[{"category":"...","original":"...","suggestion":"...","explanation":"..."}]}. Keep issues grounded in exact document text.`;
+    case "analyzer":
+      return `${base}Analyze the document. Return {"documentType":"...","mainTopic":"...","summary":"...","keyPoints":["..."],"importantDates":["..."],"entities":["..."],"statistics":["..."],"sections":["..."],"keywords":["..."]}.`;
+    case "resume":
+      return `${base}Analyze this resume as a document, not as a hiring guarantee. ${options.jobDescription ? `Compare it with this job description:\n${options.jobDescription}` : "Do not infer a target job."} Return {"structure":"...","skills":["..."],"experience":["..."],"education":["..."],"missingSections":["..."],"keywordCoverage":["..."],"clarity":"...","readability":"...","improvements":["..."],"jobMatch":{"strengths":["..."],"gaps":["..."]}}.`;
+    case "questions":
+      return `${base}Generate exactly ${options.questionCount ?? 10} ${options.difficulty ?? "Medium"} questions of type ${options.questionType ?? "Multiple choice"}. Return {"questions":[{"type":"...","question":"...","options":["..."],"answer":"...","explanation":"..."}]}. Questions and answers must be supported by the document.`;
+  }
+}
+
+export function parseAiJson<T>(response: string): T {
+  const cleaned = response.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  return JSON.parse(cleaned) as T;
 }

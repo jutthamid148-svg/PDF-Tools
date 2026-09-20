@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://pd-f-tool.vercel.app/</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/tools</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/compress-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/merge-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/split-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/rotate-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/delete-pdf-pages</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/extract-pdf-pages</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/add-page-numbers</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/watermark-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/sign-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/pdf-to-jpg</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/jpg-to-pdf</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/ai-summarizer</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/ai-chat</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/ai-quiz</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/ai-notes</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/privacy</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/terms</loc></url>
+  <url><loc>https://pd-f-tool.vercel.app/contact</loc></url>
+</urlset>

@@ -1,6 +1,6 @@
 export const SITE_NAME = "PDF Quick Tools";
 export const SITE_TAGLINE = "Simple online tools for working with PDF files.";
-export const SITE_URL = "https://pdfquicktools.whop.site";
+export const SITE_URL = "https://pd-f-tool.vercel.app";
 export const SITE_CARD = `${SITE_URL}/og-card.jpg`;
 
 /** Where the contact form's mailto is addressed. Change this to your own inbox. */

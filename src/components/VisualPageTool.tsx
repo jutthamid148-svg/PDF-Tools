@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FileList } from "./FileList";
 import { FileUploader } from "./FileUploader";
 import { PagePicker } from "./PagePicker";
+import { PageRangeInput, usePageRange } from "./PageRangeInput";
 import {
   ErrorMessage,
   ProgressBar,
@@ -26,6 +27,8 @@ interface VisualPageToolProps {
   /** Whether every page starts ticked. Rotate wants all, delete wants none. */
   selectAllByDefault: boolean;
   emptySelectionMessage: string;
+  /** Lets a tool disable processing until its own extra settings are valid. */
+  canRun?: boolean;
   options?: (state: { disabled: boolean }) => React.ReactNode;
   run: (file: File, indexes: number[], report: Report) => Promise<ResultFile[]>;
   stats?: (input: {
@@ -49,15 +52,22 @@ export function VisualPageTool({
   successTitle,
   selectAllByDefault,
   emptySelectionMessage,
+  canRun = true,
   options,
   run: operation,
   stats,
 }: VisualPageToolProps) {
   const [file, setFile] = useState<AcceptedFile | null>(null);
   const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [selectionRange, setSelectionRange] = useState("");
   const thumbs = usePageThumbs();
   const run = useToolRun(toolName);
   const busy = run.status === "working";
+  const pageCount = thumbs.thumbs.length;
+  const { pages: rangedPages, problem: rangeProblem } = usePageRange(
+    selectionRange,
+    pageCount,
+  );
 
   // Once the thumbnails land we know the page count, so apply the default.
   useEffect(() => {
@@ -72,6 +82,7 @@ export function VisualPageTool({
   const startOver = useCallback(() => {
     setFile(null);
     setSelected(new Set());
+    setSelectionRange("");
     thumbs.clear();
     run.reset();
   }, [run, thumbs]);
@@ -79,6 +90,7 @@ export function VisualPageTool({
   async function pick(files: AcceptedFile[]) {
     const chosen = files[0];
     setFile(chosen);
+    setSelectionRange("");
     run.reset();
     await thumbs.load(chosen.file);
   }
@@ -96,14 +108,13 @@ export function VisualPageTool({
 
   async function start() {
     if (!file) return;
+    if (!canRun) return;
     if (order.length === 0) {
       run.fail(emptySelectionMessage);
       return;
     }
     await run.run((report) => operation(file.file, order, report));
   }
-
-  const pageCount = thumbs.thumbs.length;
 
   return (
     <ToolPanel>
@@ -161,6 +172,31 @@ export function VisualPageTool({
                 tone={tone}
               />
 
+              <div className="rounded-2xl bg-ink-50 p-4 ring-1 ring-ink-200/80 dark:bg-ink-950/45 dark:ring-ink-800">
+                <PageRangeInput
+                  value={selectionRange}
+                  onChange={setSelectionRange}
+                  pageCount={pageCount}
+                  pages={rangedPages}
+                  problem={rangeProblem}
+                  disabled={busy}
+                  label="Quick-select pages"
+                />
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={busy || rangeProblem !== null || rangedPages.length === 0}
+                    onClick={() => setSelected(new Set(rangedPages))}
+                    className={button("secondary", "sm")}
+                  >
+                    Apply range
+                  </button>
+                  <p className="text-xs text-ink-500 dark:text-ink-500">
+                    Applying a range replaces the current thumbnail selection.
+                  </p>
+                </div>
+              </div>
+
               <p className="text-sm text-ink-600 dark:text-ink-400">
                 {order.length === 0
                   ? "No pages selected yet."
@@ -184,7 +220,7 @@ export function VisualPageTool({
                   <button
                     type="button"
                     onClick={start}
-                    disabled={order.length === 0}
+                    disabled={order.length === 0 || !canRun}
                     className={button("primary", "lg")}
                   >
                     {actionLabel}

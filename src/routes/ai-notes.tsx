@@ -4,6 +4,7 @@ import { FileUploader } from "#/components/FileUploader";
 import { ProgressBar, ErrorMessage } from "#/components/ToolFeedback";
 import { ToolPanel, ToolShell } from "#/components/ToolShell";
 import { button } from "#/components/ui";
+import { GenerateButton } from "#/components/GenerateButton";
 import { useToolRun } from "#/hooks/useToolRun";
 import { type AcceptedFile, FriendlyError } from "#/lib/files";
 import { pageHead } from "#/lib/seo";
@@ -162,13 +163,7 @@ function AiNotesPage() {
 
             {!busy && run.status !== "error" && (
               <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={handleGenerate}
-                  className={button("primary", "lg")}
-                >
-                  Generate Notes
-                </button>
+                <GenerateButton onClick={handleGenerate}>Generate Notes</GenerateButton>
                 <button
                   type="button"
                   onClick={startOver}

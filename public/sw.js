@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pdf-tools-v1';
+const CACHE_NAME = 'pdf-tools-v2';
 const STATIC_ASSETS = [
   '/',
   '/favicon.svg',

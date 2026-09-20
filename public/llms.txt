@@ -1,0 +1,21 @@
+# PDF Quick Tools
+
+PDF Quick Tools is a free browser-based PDF utility platform. Files are processed locally in the browser for the client-side PDF tools.
+
+## Main pages
+
+- [Home](https://pd-f-tool.vercel.app/): Free online PDF tools.
+- [All tools](https://pd-f-tool.vercel.app/tools): Browse PDF utilities.
+- [Privacy Policy](https://pd-f-tool.vercel.app/privacy): Data handling and advertising disclosure.
+- [Terms of Use](https://pd-f-tool.vercel.app/terms): Usage terms.
+- [Contact](https://pd-f-tool.vercel.app/contact): Contact information.
+
+## PDF tools
+
+- [Compress PDF](https://pd-f-tool.vercel.app/compress-pdf)
+- [Merge PDF](https://pd-f-tool.vercel.app/merge-pdf)
+- [Split PDF](https://pd-f-tool.vercel.app/split-pdf)
+- [PDF to JPG](https://pd-f-tool.vercel.app/pdf-to-jpg)
+- [JPG to PDF](https://pd-f-tool.vercel.app/jpg-to-pdf)
+- [Watermark PDF](https://pd-f-tool.vercel.app/watermark-pdf)
+- [Sign PDF](https://pd-f-tool.vercel.app/sign-pdf)

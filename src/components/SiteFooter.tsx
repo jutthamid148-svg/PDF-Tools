@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { SITE_NAME, SITE_TAGLINE } from "#/lib/site";
-import { PdfFileIcon } from "./Icons";
+import { BrandMark } from "./BrandMark";
 
 const TOOL_LINKS = [
   { to: "/compress-pdf", label: "Compress PDF" },
@@ -8,6 +8,8 @@ const TOOL_LINKS = [
   { to: "/split-pdf", label: "Split PDF" },
   { to: "/pdf-to-jpg", label: "PDF to JPG" },
   { to: "/jpg-to-pdf", label: "JPG to PDF" },
+  { to: "/watermark-pdf", label: "Watermark PDF" },
+  { to: "/sign-pdf", label: "Sign PDF" },
 ] as const;
 
 const MORE_LINKS = [
@@ -20,8 +22,10 @@ const MORE_LINKS = [
 
 const SITE_LINKS = [
   { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
   { to: "/privacy", label: "Privacy Policy" },
   { to: "/terms", label: "Terms" },
+  { to: "/disclaimer", label: "Disclaimer" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -58,9 +62,7 @@ export function SiteFooter() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2 text-ink-900 dark:text-white">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
-                <PdfFileIcon className="h-4.5 w-4.5" />
-              </span>
+              <BrandMark compact />
               <span className="font-bold tracking-tight">{SITE_NAME}</span>
             </div>
             <p className="mt-3 max-w-xs text-sm text-ink-600 dark:text-ink-400">
@@ -73,9 +75,19 @@ export function SiteFooter() {
           <Column title="Site" links={SITE_LINKS} />
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-ink-200 pt-6 text-sm text-ink-500 sm:flex-row sm:items-center sm:justify-between dark:border-ink-800 dark:text-ink-500">
+        <div className="mt-10 flex flex-col gap-4 border-t border-ink-200 pt-6 text-sm text-ink-500 sm:flex-row sm:items-center sm:justify-between dark:border-ink-800 dark:text-ink-500">
           <p>© 2026 {SITE_NAME}</p>
-          <p>A product of Aifinancepk.</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p>A product of Aifinancepk.</p>
+            <a
+              href="https://aifinancepk.site/"
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold hover:text-brand-700 dark:hover:text-brand-300"
+            >
+              aifinancepk.site
+            </a>
+          </div>
         </div>
       </div>
     </footer>

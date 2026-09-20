@@ -9,6 +9,7 @@
     "dev": "vite dev --port 3000",
     "generate-routes": "tsr generate",
     "build": "vite build",
+    "build:extension": "vite build --config extension/vite.config.ts",
     "preview": "vite preview",
     "deploy": "whop apps deploy",
     "typecheck": "tsc --noEmit"

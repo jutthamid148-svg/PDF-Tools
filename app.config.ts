@@ -1,6 +1,2 @@
-import { defineConfig } from "@tanstack/react-start/config";
-import viteConfig from "./vite.config";
-
-export default defineConfig({
-  vite: viteConfig,
-});
+// Vite and TanStack Start configuration lives in vite.config.ts.
+export { default } from './vite.config'

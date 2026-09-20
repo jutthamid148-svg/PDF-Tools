@@ -20,7 +20,7 @@ export function ProgressBar({ progress }: { progress: Progress }) {
         </p>
       </div>
       <div
-        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-brand-100 dark:bg-brand-900/50"
+        className="progress-track mt-3 h-2 w-full overflow-hidden rounded-full bg-brand-100 dark:bg-brand-900/50"
         role="progressbar"
         aria-valuenow={progress.percent}
         aria-valuemin={0}
@@ -28,9 +28,13 @@ export function ProgressBar({ progress }: { progress: Progress }) {
         aria-label="Processing progress"
       >
         <div
-          className="animate-shimmer h-full rounded-full bg-brand-600 transition-[width] duration-200 ease-out dark:bg-brand-400"
+          className="progress-fill h-full rounded-full bg-brand-600 transition-[width] duration-500 ease-out dark:bg-brand-400"
           style={{ width: `${Math.max(progress.percent, 4)}%` }}
         />
+      </div>
+      <div className="mt-4 flex items-center gap-3 text-xs font-medium text-brand-700 dark:text-brand-300">
+        <span className="document-scanner" aria-hidden="true"><PdfFileIcon className="h-7 w-7" /></span>
+        <span>Scanning and preparing your document</span>
       </div>
     </div>
   );
@@ -198,7 +202,7 @@ export function SuccessPanel({
               <button
                 type="button"
                 onClick={() => download(result)}
-                className={button("primary", "sm")}
+                className={button("primary", "sm", "min-h-10")}
               >
                 <DownloadIcon className="h-4 w-4" />
                 Download

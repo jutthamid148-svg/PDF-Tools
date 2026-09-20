@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { SiteFooter } from "#/components/SiteFooter";
 import { SiteHeader } from "#/components/SiteHeader";
+import { CookieConsent } from "#/components/CookieConsent";
 import { themeBootScript } from "#/components/ThemeToggle";
 import { button } from "#/components/ui";
 import { pageHead } from "#/lib/seo";
@@ -26,13 +27,18 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#4f46e5" },
+      { name: "msvalidate.01", content: "DA43AA94C5BF09741BAD211519D394B0" },
       ...defaults.meta,
     ],
     // Meta is de-duplicated by name across routes, so these act as fallbacks.
     // Links are not, so the canonical belongs to each route, never here.
     links: [
+      { rel: "preload", href: appCss, as: "style" },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "manifest", href: "/manifest.json" },
     ],
   }),
   shellComponent: RootDocument,
@@ -41,7 +47,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
         {/* Applies the saved theme before first paint. */}
@@ -71,6 +77,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           </main>
           <SiteFooter />
         </div>
+        <CookieConsent />
         <Scripts />
       </body>
     </html>

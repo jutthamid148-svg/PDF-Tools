@@ -8,7 +8,7 @@ import { useToolRun } from "#/hooks/useToolRun";
 import { type AcceptedFile, FriendlyError } from "#/lib/files";
 import { pageHead } from "#/lib/seo";
 import { toolByHref } from "#/lib/tools";
-import { extractPdfText, callGemini, chatPrompt } from "#/lib/ai";
+import { extractPdfText, callGemini, chatPrompt, type AiAttachment } from "#/lib/ai";
 import { AiChat, type ChatMessage } from "#/components/AiChat";
 
 const tool = toolByHref("/ai-chat");
@@ -53,10 +53,23 @@ const SUGGESTED_QUESTIONS = [
   "What are the important dates or numbers?",
 ];
 
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result)));
+    reader.addEventListener("error", () => reject(new Error("The image could not be read.")));
+    reader.readAsDataURL(file);
+  });
+}
+
 function AiChatPage() {
   const [file, setFile] = useState<AcceptedFile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [pdfText, setPdfText] = useState("");
+  const [imageAttachment, setImageAttachment] = useState<AiAttachment | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const run = useToolRun(tool.name);
   const busy = run.status === "working";
 
@@ -64,6 +77,10 @@ function AiChatPage() {
     setFile(incoming[0] ?? null);
     setMessages([]);
     setPdfText("");
+    setImageAttachment(null);
+    setIsSending(false);
+    setChatError(null);
+    setLastQuestion(null);
     if (run.status !== "idle") run.reset();
   }
 
@@ -71,6 +88,10 @@ function AiChatPage() {
     setFile(null);
     setMessages([]);
     setPdfText("");
+    setImageAttachment(null);
+    setIsSending(false);
+    setChatError(null);
+    setLastQuestion(null);
     run.reset();
   }
 
@@ -78,30 +99,46 @@ function AiChatPage() {
     if (!file) return;
     await run.run(async (report) => {
       report(20, "Loading PDF...");
-      const text = await extractPdfText(file.file);
-      if (!text.trim()) {
-        throw new FriendlyError("Could not extract text from this PDF. It may be a scanned document.");
+      if (file.file.type.startsWith("image/")) {
+        const dataUrl = await readFileAsDataUrl(file.file);
+        setImageAttachment({
+          mimeType: file.file.type,
+          data: dataUrl.split(",")[1] ?? "",
+        });
+        setPdfText("Image attachment ready.");
+      } else {
+        const text = await extractPdfText(file.file);
+        if (!text.trim()) {
+          throw new FriendlyError("Could not extract text from this PDF. It may be a scanned document.");
+        }
+        setPdfText(text);
       }
-      setPdfText(text);
       report(100, "Ready!");
       return [];
     });
   }, [file, run]);
 
   const handleSend = useCallback(
-    async (question: string) => {
-      if (!pdfText) return;
+    async (question: string, addUserMessage = true) => {
+      if (!pdfText || isSending) return;
 
-      const userMsg: ChatMessage = {
-        role: "user",
-        content: question,
-        timestamp: Date.now(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
+      if (addUserMessage) {
+        const userMsg: ChatMessage = {
+          role: "user",
+          content: question,
+          timestamp: Date.now(),
+        };
+        setMessages((prev) => [...prev, userMsg]);
+      }
+      setChatError(null);
+      setLastQuestion(question);
+      setIsSending(true);
 
       try {
-        const prompt = chatPrompt(pdfText, question);
-        const response = await callGemini(prompt);
+        const prompt = imageAttachment
+          ? `You are a helpful AI assistant. Answer the user's question about the uploaded image clearly and concisely. User question: ${question}`
+          : chatPrompt(pdfText, question);
+        const response = await callGemini(prompt, imageAttachment ?? undefined);
 
         const assistantMsg: ChatMessage = {
           role: "assistant",
@@ -109,16 +146,17 @@ function AiChatPage() {
           timestamp: Date.now(),
         };
         setMessages((prev) => [...prev, assistantMsg]);
-      } catch {
-        const errorMsg: ChatMessage = {
-          role: "assistant",
-          content: "Sorry, I couldn't process that question. Please try again.",
-          timestamp: Date.now(),
-        };
-        setMessages((prev) => [...prev, errorMsg]);
+      } catch (error) {
+        setChatError(
+          error instanceof Error
+            ? error.message
+            : "Sorry, the AI could not process that question. Please try again.",
+        );
+      } finally {
+        setIsSending(false);
       }
     },
-    [pdfText],
+    [imageAttachment, isSending, pdfText],
   );
 
   return (
@@ -126,11 +164,11 @@ function AiChatPage() {
       <ToolPanel>
         {!file && (
           <FileUploader
-            kind="pdf"
+            kind="document"
             toolName={tool.name}
             onFiles={add}
             onRejected={run.fail}
-            label="Upload PDF to Chat"
+            label="Upload PDF or image to Chat"
           />
         )}
 
@@ -199,8 +237,10 @@ function AiChatPage() {
             <AiChat
               onSend={handleSend}
               messages={messages}
-              isLoading={busy}
+              isLoading={isSending}
               suggestedQuestions={messages.length === 0 ? SUGGESTED_QUESTIONS : undefined}
+              error={chatError}
+              onRetry={lastQuestion ? () => handleSend(lastQuestion, false) : undefined}
             />
           </div>
         )}
