@@ -79,7 +79,8 @@ function Terms() {
 
       <Block title="Contact">
         <p>
-          {SITE_NAME} is operated by Aifinancepk. Questions belong on the{" "}
+          {SITE_NAME} is operated by Muhammad Hamid from Faisalabad, Pakistan.
+          Questions belong on the{" "}
           <Link to="/contact" className="font-semibold text-brand-700 dark:text-brand-300">
             contact page
           </Link>

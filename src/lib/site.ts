@@ -6,7 +6,7 @@ export const EXTENSION_DOWNLOAD_URL = `${SITE_URL}/downloads/pdf-tool-chrome-ext
 export const SITE_CARD = `${SITE_URL}/og-card.jpg`;
 
 /** Where the contact form's mailto is addressed. Change this to your own inbox. */
-export const CONTACT_EMAIL = "support@aifinancepk.com";
+export const CONTACT_EMAIL = "jutthamid148@gmail.com";
 
 /** The single source of truth for the size limit shown to users and enforced in code. */
 export const MAX_FILE_BYTES = 50 * 1024 * 1024;

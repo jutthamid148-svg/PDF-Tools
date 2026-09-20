@@ -45,7 +45,7 @@ function Contact() {
   return (
     <ArticlePage
       title="Contact"
-      intro={`${SITE_NAME} is built and run by Aifinancepk. If something did not work, telling us is genuinely useful.`}
+      intro={`${SITE_NAME} is built and maintained by Muhammad Hamid from Faisalabad, Pakistan. If something did not work, telling us is genuinely useful.`}
     >
       <Block title="Before you write">
         <p>

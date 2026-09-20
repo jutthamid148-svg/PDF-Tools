@@ -17,7 +17,7 @@ function AboutPage() {
   return (
     <ArticlePage
       title="About"
-      intro={`Meet the person behind ${SITE_NAME}: a privacy-first PDF toolkit built to make document work faster, simpler, and safer.`}
+      intro={`Meet Muhammad Hamid from Faisalabad, Pakistan, the creator of ${SITE_NAME}: a privacy-first PDF toolkit built to make document work faster, simpler, and safer.`}
       updated="20 September 2026"
     >
       <div className="overflow-hidden rounded-[28px] border border-ink-200 bg-white shadow-sm dark:border-ink-800 dark:bg-ink-900/40">
@@ -30,6 +30,13 @@ function AboutPage() {
       </div>
 
       <Block title="Our story">
+        <p>
+          My name is <strong>Muhammad Hamid</strong>, and I build and maintain
+          {" "}{SITE_NAME} from <strong>Faisalabad, Pakistan</strong>. I created this
+          project to give people a straightforward way to handle everyday PDF
+          tasks without unnecessary accounts, confusing software, or avoidable
+          data collection.
+        </p>
         <p>
           PDF Quick Tools was created to solve a practical problem: people need
           quick, reliable tools for PDF work without paying for complicated
@@ -78,6 +85,20 @@ function AboutPage() {
           convert between formats, the tools are designed to be quick to open and
           quick to trust. The user experience is intentionally clean so that the
           job gets done without clutter or confusion.
+        </p>
+      </Block>
+
+      <Block title="Get in touch">
+        <p>
+          Have a suggestion, found a problem, or want to share feedback? You can
+          contact Muhammad Hamid at{" "}
+          <a
+            href="mailto:jutthamid148@gmail.com"
+            className="font-semibold text-brand-700 underline underline-offset-2 dark:text-brand-300"
+          >
+            jutthamid148@gmail.com
+          </a>
+          .
         </p>
       </Block>
     </ArticlePage>
