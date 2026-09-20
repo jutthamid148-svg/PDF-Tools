@@ -9,6 +9,7 @@ import {
   SparkIcon,
 } from "#/components/Icons";
 import { ToolCard } from "#/components/ToolCard";
+import { ExtensionBanner } from "#/components/ExtensionBanner";
 import { button, heading, muted, sectionWrap } from "#/components/ui";
 import { callGemini, extractPdfText, type AiAttachment } from "#/lib/ai";
 import { faqJsonLd, pageHead, softwareJsonLd, type FaqItem } from "#/lib/seo";
@@ -121,6 +122,8 @@ function Home() {
           <SparkIcon className="ai-corner-sparkle ai-corner-sparkle-large" />
         </span>
       </Link>
+
+      <ExtensionBanner />
 
       <Hero />
 
