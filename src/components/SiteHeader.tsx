@@ -134,6 +134,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 function InstallAppButton() {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     function capture(event: Event) {
@@ -144,19 +145,27 @@ function InstallAppButton() {
     return () => window.removeEventListener("beforeinstallprompt", capture);
   }, []);
 
-  if (!installPrompt) return null;
-
   async function install() {
     const prompt = installPrompt;
-    if (!prompt) return;
+    if (!prompt) {
+      setMessage("Use your browser menu and choose Install PDF Quick Tools.");
+      return;
+    }
     await prompt.prompt();
     await prompt.userChoice;
     setInstallPrompt(null);
   }
 
   return (
-    <button type="button" onClick={() => void install()} className={button("secondary", "sm")}>
-      Install App
-    </button>
+    <>
+      <button type="button" onClick={() => void install()} className={button("secondary", "sm")}>
+        Install App
+      </button>
+      {message && (
+        <span className="sr-only" role="status" aria-live="polite">
+          {message}
+        </span>
+      )}
+    </>
   );
 }
