@@ -69,6 +69,18 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 npm run build
 ```
 
+### Chrome Extension
+
+Build the companion extension with:
+
+```bash
+npm run build:extension
+```
+
+Then load the generated `dist-extension/` folder from `chrome://extensions` with
+Developer mode enabled. A packaged ZIP is also available at
+`/downloads/pdf-tool-chrome-extension.zip` on the deployed website.
+
 ## Project Structure
 
 ```

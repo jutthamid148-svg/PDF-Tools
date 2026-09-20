@@ -80,6 +80,13 @@ export function SiteFooter() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <p>A product of Aifinancepk.</p>
             <a
+              href="/downloads/pdf-tool-chrome-extension.zip"
+              download
+              className="font-semibold hover:text-brand-700 dark:hover:text-brand-300"
+            >
+              Download Chrome Extension
+            </a>
+            <a
               href="https://aifinancepk.site/"
               target="_blank"
               rel="noreferrer"
