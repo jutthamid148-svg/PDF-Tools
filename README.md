@@ -1,45 +1,128 @@
 # PDF Quick Tools
 
-A modern, browser-based PDF utility platform built with React, TanStack Router, and VStack. Compress, merge, split, convert, and manage PDF files — all without uploading to a server.
+<p align="center">
+  <strong>Simple PDF tools. Fast results. Privacy-first processing.</strong>
+</p>
 
-## Features
+<p align="center">
+  <a href="https://pd-f-tool.vercel.app/">Open the live website</a>
+  ·
+  <a href="https://pd-f-tool.vercel.app/tools">Browse all tools</a>
+  ·
+  <a href="https://github.com/jutthamid148-svg/PDF-Tools/releases/tag/v1.0.0">Chrome Extension release</a>
+</p>
 
-### PDF Tools
-| Tool | Description |
-|------|-------------|
-| **Compress PDF** | Reduce file size while maintaining quality |
-| **Merge PDF** | Combine multiple PDFs into one document |
-| **Split PDF** | Extract specific pages from a PDF |
-| **PDF to JPG** | Convert PDF pages into JPG images |
-| **JPG to PDF** | Convert images into a single PDF |
-| **Rotate PDF** | Fix sideways or upside-down pages |
-| **Delete Pages** | Remove unwanted pages |
-| **Extract Pages** | Keep only the pages you select |
+PDF Quick Tools is a browser-based PDF workspace for compressing, merging, splitting, converting, editing, organizing, and understanding documents with AI.
 
-### AI-Powered Tools
-| Tool | Description |
-|------|-------------|
-| **AI Summarizer** | Get instant summaries with key points and reading time |
-| **AI Chat** | Ask questions about your PDF content |
-| **AI Quiz Generator** | Create study quizzes from PDF content |
-| **AI Notes** | Generate structured notes from documents |
+> **Live:** [pd-f-tool.vercel.app](https://pd-f-tool.vercel.app/)
 
-## Tech Stack
+## Screenshots
 
-- **Framework:** React 19 + TanStack Router + TanStack Start
-- **Styling:** Tailwind CSS v4
-- **PDF Processing:** pdf-lib, pdfjs-dist
-- **AI Integration:** Gemini API (server-side)
-- **Build:** Vite 8 + Cloudflare Workers
-- **Deployment:** Whop CLI
+### Homepage
 
-## Getting Started
+![PDF Quick Tools homepage](public/screenshots/home-desktop.png)
 
-### Prerequisites
-- Node.js 18+
-- npm or yarn
+### Mobile experience
 
-### Installation
+![PDF Quick Tools mobile homepage](public/screenshots/home-mobile.png)
+
+### AI tools drawer
+
+![PDF Quick Tools AI tools drawer](public/screenshots/ai-tools-drawer.png)
+
+## What It Includes
+
+### PDF tools
+
+- Compress PDF
+- Merge PDF
+- Split PDF
+- PDF to JPG
+- JPG to PDF
+- Rotate PDF
+- Rearrange PDF pages
+- Delete pages
+- Extract pages
+- Add page numbers
+- Watermark PDF
+- Sign PDF
+
+### AI tools
+
+- AI Summarizer
+- AI Chat
+- AI Quiz Generator
+- AI Notes Generator
+- AI PDF Translator
+- AI PDF Rewriter
+- AI Ask PDF
+- AI PDF to Presentation
+- AI Flashcard Generator
+- AI Citation Generator
+- AI Grammar & Writing Checker
+- AI Document Analyzer
+- AI Resume Analyzer
+- AI PDF Question Generator
+
+Every AI tool uses the same document workflow: browser-side PDF text extraction, an explicit AI action, progress/error states, and structured results. AI output is presented as assistance, not professional, legal, academic, financial, or hiring advice.
+
+## Privacy By Design
+
+- Regular PDF operations run in the browser.
+- Original PDFs are not uploaded for regular tools.
+- AI tools send extracted text to the server-side AI endpoint only when the user runs an AI action.
+- Analytics are optional and gated behind the privacy choice banner.
+- No PDF files, document text, passwords, or API keys are stored in browser preferences.
+- No account is required.
+
+Read the full policies:
+
+- [Privacy Policy](https://pd-f-tool.vercel.app/privacy)
+- [Terms of Use](https://pd-f-tool.vercel.app/terms)
+- [Disclaimer](https://pd-f-tool.vercel.app/disclaimer)
+- [About Muhammad Hamid](https://pd-f-tool.vercel.app/about)
+- [Contact](https://pd-f-tool.vercel.app/contact)
+
+## Chrome Extension
+
+The companion Manifest V3 extension provides quick access to PDF tools from Chrome, including search, favorites, recent tools, themes, current PDF detection, context-menu actions, and the `Ctrl + Shift + P` shortcut.
+
+### Download
+
+- [Download the Chrome Extension ZIP](https://pd-f-tool.vercel.app/downloads/pdf-tool-chrome-extension.zip)
+- [GitHub Release v1.0.0](https://github.com/jutthamid148-svg/PDF-Tools/releases/tag/v1.0.0)
+
+### Install locally
+
+1. Download and extract the ZIP.
+2. Open `chrome://extensions`.
+3. Enable **Developer mode**.
+4. Click **Load unpacked**.
+5. Select the extracted extension folder.
+
+For Chrome Web Store publishing, upload the ZIP through the Chrome Developer Dashboard. Chrome does not allow websites to silently install extensions.
+
+## Technology
+
+- React 19
+- TanStack Router and TanStack Start
+- TypeScript
+- Vite
+- Tailwind CSS v4
+- `pdf-lib`
+- `pdfjs-dist`
+- Gemini API through a server-side endpoint
+- Vercel deployment
+
+## Local Development
+
+### Requirements
+
+- Node.js 18 or newer
+- npm
+- A Gemini API key for AI features
+
+### Setup
 
 ```bash
 git clone https://github.com/jutthamid148-svg/PDF-Tools.git
@@ -47,96 +130,58 @@ cd PDF-Tools
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env` file in the root directory:
+Create `.env.local`:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-### Development
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-### Production Build
+### Validation and builds
 
 ```bash
+npm run typecheck
 npm run build
-```
-
-### Chrome Extension
-
-Build the companion extension with:
-
-```bash
 npm run build:extension
 ```
 
-Then load the generated `dist-extension/` folder from `chrome://extensions` with
-Developer mode enabled. A packaged ZIP is also available at
-`/downloads/pdf-tool-chrome-extension.zip` on the deployed website.
+The Chrome extension build is written to `dist-extension/` and can be loaded unpacked in Chrome.
 
 ## Project Structure
 
-```
+```text
 src/
-├── components/       # Reusable UI components
-│   ├── FileUploader   # Drag & drop file upload
-│   ├── ToolCard       # Tool display cards
-│   ├── ToolShell      # Tool page layout
-│   └── ui/            # Design system (buttons, cards, etc.)
-├── hooks/            # Custom React hooks
-│   └── useToolRun     # State machine for tool processing
-├── lib/              # Utilities and helpers
-│   ├── ai.ts          # AI integration (Gemini API)
-│   ├── pdf.ts         # PDF processing utilities
-│   └── tools.ts       # Tool definitions
-├── routes/           # Page components
-│   ├── index.tsx      # Landing page
-│   ├── tools.tsx      # All tools page
-│   ├── compress-pdf.tsx
-│   ├── merge-pdf.tsx
-│   └── ...
-├── server/           # Server-side functions
-│   └── askGemini.ts   # Gemini API server function
-└── styles.css        # Global styles and animations
+├── components/       Shared UI, uploaders, feedback, AI panels, and layout
+├── hooks/            Shared processing state machines
+├── lib/              PDF, AI, analytics, SEO, site, and tool services
+├── routes/           Website pages and individual tool routes
+└── server/           Server-side Gemini integration
+
+api/                  Vercel server endpoint for AI requests
+extension/            Manifest V3 Chrome extension source
+public/               PWA assets, icons, sitemap, and screenshots
+scripts/              Asset generation scripts
 ```
 
-## How It Works
+## Deployment
 
-1. **Upload** — Drag and drop or click to select your PDF
-2. **Process** — Choose your desired operation
-3. **Download** — Get your processed file instantly
+The production website is deployed at [pd-f-tool.vercel.app](https://pd-f-tool.vercel.app/).
 
-All processing happens in your browser. Files never leave your device.
+The repository includes the PWA manifest, service worker, PNG install icons, extension build configuration, and GitHub release package.
 
-## Key Features
+## Maintainer
 
-- **No Account Required** — Use all tools without signing up
-- **No Watermarks** — Clean output files
-- **Mobile Friendly** — Works on all devices
-- **Privacy First** — Files are processed locally in your browser
-- **AI Powered** — Smart analysis with Gemini AI integration
+PDF Quick Tools is built and maintained by **Muhammad Hamid** from **Faisalabad, Pakistan**.
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contact: [jutthamid148@gmail.com](mailto:jutthamid148@gmail.com)
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-## Contact
-
-For questions or feedback, please open an issue on the repository.
+This project is available under the MIT License.
