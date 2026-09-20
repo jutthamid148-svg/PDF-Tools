@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Faq } from "#/components/Faq";
 import {
   ArrowRightIcon,
@@ -10,6 +10,7 @@ import {
 } from "#/components/Icons";
 import { ToolCard } from "#/components/ToolCard";
 import { ExtensionBanner } from "#/components/ExtensionBanner";
+import { AiToolDrawer } from "#/components/AiToolDrawer";
 import { button, heading, muted, sectionWrap } from "#/components/ui";
 import { callGemini, extractPdfText, type AiAttachment } from "#/lib/ai";
 import { faqJsonLd, pageHead, softwareJsonLd, type FaqItem } from "#/lib/seo";
@@ -99,6 +100,17 @@ function StatsBanner() {
 }
 
 function Home() {
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    if (!aiDrawerOpen) return;
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setAiDrawerOpen(false);
+    }
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [aiDrawerOpen]);
+
   return (
     <>
       <script
@@ -111,17 +123,21 @@ function Home() {
         }}
       />
 
-      <Link
-        to="/ai-summarizer"
+      <button
+        type="button"
+        onClick={() => setAiDrawerOpen(true)}
         className="ai-corner-button"
-        aria-label="Open AI Summarizer"
+        aria-label="Open AI tools"
+        aria-expanded={aiDrawerOpen}
       >
         <span className="ai-corner-wordmark">AI Tool</span>
         <span className="ai-corner-sparkles" aria-hidden="true">
           <SparkIcon className="ai-corner-sparkle ai-corner-sparkle-small" />
           <SparkIcon className="ai-corner-sparkle ai-corner-sparkle-large" />
         </span>
-      </Link>
+      </button>
+
+      {aiDrawerOpen && <AiToolDrawer onClose={() => setAiDrawerOpen(false)} />}
 
       <ExtensionBanner />
 
