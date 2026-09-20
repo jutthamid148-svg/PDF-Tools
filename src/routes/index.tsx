@@ -68,7 +68,7 @@ const popular = TOOLS.filter((tool) => tool.popular);
 const aiTools = TOOLS.filter((tool) => tool.category === "AI Tools");
 
 const STATS = [
-  { value: "100%", label: "Client-Side Privacy", sub: "Files never hit servers" },
+  { value: "Local", label: "Privacy-first processing", sub: "Original files stay on your device" },
   { value: "0 sec", label: "Queue Wait Time", sub: "Instant local execution" },
   { value: "13+", label: "Essential PDF Tools", sub: "Including Next-Gen AI" },
   { value: "Free", label: "No Subscriptions", sub: "No watermarks or limits" },

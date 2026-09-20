@@ -66,8 +66,8 @@ export function SiteFooter() {
               <span className="font-bold tracking-tight">{SITE_NAME}</span>
             </div>
             <p className="mt-3 max-w-xs text-sm text-ink-600 dark:text-ink-400">
-              {SITE_TAGLINE} Everything runs in your own browser, so your files
-              never leave your device.
+              {SITE_TAGLINE} Regular PDF tools run in your browser. AI tools send
+              extracted text only when you start an AI action.
             </p>
           </div>
           <Column title="Popular tools" links={TOOL_LINKS} />

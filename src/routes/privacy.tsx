@@ -87,6 +87,30 @@ function Privacy() {
         </p>
       </Block>
 
+      <Block title="Advertising and Google services">
+        <p>
+          The site may use Google advertising services as monetization is
+          enabled. If ads are served, Google and its partners may use cookies,
+          web beacons, IP addresses, or similar identifiers to deliver, measure,
+          and limit advertising. Users can learn how Google uses data on partner
+          sites in the{" "}
+          <a
+            href="https://www.google.com/policies/privacy/partners/"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-brand-700 underline underline-offset-2 dark:text-brand-300"
+          >
+            Google partner-sites privacy page
+          </a>
+          .
+        </p>
+        <p>
+          We do not sell personal information or use document contents to target
+          advertising. Advertising must remain separate from tool controls and
+          must never be mistaken for a download, navigation, or processing action.
+        </p>
+      </Block>
+
       <Block title="Accounts">
         <p>
           The tools on this site do not require an account. We do not ask for
