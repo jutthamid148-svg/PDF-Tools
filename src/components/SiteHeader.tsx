@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { SITE_NAME } from "#/lib/site";
+import { EXTENSION_DOWNLOAD_URL, GITHUB_RELEASE_URL, SITE_NAME } from "#/lib/site";
 import { CloseIcon, MenuIcon } from "./Icons";
 import { BrandMark } from "./BrandMark";
 import { ThemeToggle } from "./ThemeToggle";
@@ -64,6 +64,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <InstallAppButton />
           <ThemeToggle />
           <Link to="/tools" className={cx(button("primary", "sm"), "hidden sm:inline-flex")}>
             All Tools
@@ -111,9 +112,51 @@ export function SiteHeader() {
                 All Tools
               </Link>
             </li>
+            <li className="mt-2 grid gap-2 sm:grid-cols-2">
+              <a href={EXTENSION_DOWNLOAD_URL} download className={cx(button("secondary", "md"), "w-full")}>
+                Chrome Extension
+              </a>
+              <a href={GITHUB_RELEASE_URL} target="_blank" rel="noreferrer" className={cx(button("secondary", "md"), "w-full")}>
+                GitHub Release
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
     </header>
+  );
+}
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
+function InstallAppButton() {
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    function capture(event: Event) {
+      event.preventDefault();
+      setInstallPrompt(event as BeforeInstallPromptEvent);
+    }
+    window.addEventListener("beforeinstallprompt", capture);
+    return () => window.removeEventListener("beforeinstallprompt", capture);
+  }, []);
+
+  if (!installPrompt) return null;
+
+  async function install() {
+    const prompt = installPrompt;
+    if (!prompt) return;
+    await prompt.prompt();
+    await prompt.userChoice;
+    setInstallPrompt(null);
+  }
+
+  return (
+    <button type="button" onClick={() => void install()} className={button("secondary", "sm")}>
+      Install App
+    </button>
   );
 }

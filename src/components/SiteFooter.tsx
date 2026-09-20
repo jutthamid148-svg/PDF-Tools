@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { SITE_NAME, SITE_TAGLINE } from "#/lib/site";
+import { EXTENSION_DOWNLOAD_URL, GITHUB_RELEASE_URL, SITE_NAME, SITE_TAGLINE } from "#/lib/site";
 import { BrandMark } from "./BrandMark";
 
 const TOOL_LINKS = [
@@ -80,11 +80,19 @@ export function SiteFooter() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <p>A product of Aifinancepk.</p>
             <a
-              href="/downloads/pdf-tool-chrome-extension.zip"
+              href={EXTENSION_DOWNLOAD_URL}
               download
               className="font-semibold hover:text-brand-700 dark:hover:text-brand-300"
             >
               Download Chrome Extension
+            </a>
+            <a
+              href={GITHUB_RELEASE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold hover:text-brand-700 dark:hover:text-brand-300"
+            >
+              GitHub Release
             </a>
             <a
               href="https://aifinancepk.site/"
